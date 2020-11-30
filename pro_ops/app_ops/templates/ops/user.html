@@ -1,0 +1,66 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/os.css">
+
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">用户管理</h5>
+    <div id="container">
+        <br>
+        <br>
+        <div id="bk_content">
+            {% if perms.add_user %}
+            &emsp;&emsp;<a href="/ops/user_detail/0/"><button>新增用户</button></a>
+            {% endif %}
+            <br>
+            <br>
+            <table class="common" style="width: 97%;">
+                <tr>
+                    <th>序号</th>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>Email</th>
+                    <th>状态</th>
+                    <th>上次登录时间</th>
+                    <th>操作</th>
+                </tr>
+                {% for i in info %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.username }}</td>
+                    <td>{{ i.first_name }}</td>
+                    <td>{{ i.email }}</td>
+                    <td>{% ifequal i.is_active 1 %}启用{% else %}禁用{% endifequal %}</td>
+                    <td>{{ i.last_login }}</td>
+                    <td>
+                        {% if perms.change_user %}
+                        <a href="/ops/user_detail/{{i.id}}/" class="user_edit">编辑</a>&emsp;
+                        {% endif %}
+                        {% if perms.delete_user and i.id != 1 %}
+                        <a href="#" class="user_del" tag="{{i.id}}">删除</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $("#li_user_manager").css("background-color","rgb(46, 50, 54)")
+        $("#li_user_manager a").css("color","white")
+
+        $(".user_del").click(function(){
+            id = $(this).attr("tag")
+            url = '/ops/del_user/'+id+'/'
+            $.getJSON(url,function(status){
+                window.location.href = "/ops/user_manager/"
+                alert(status.tips)
+            })
+        })
+
+    </script>
+{% endblock %}
+
+

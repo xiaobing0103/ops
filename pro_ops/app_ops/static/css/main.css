@@ -1,0 +1,14 @@
+#container{
+    position: relative;
+}
+
+#chat1{
+    width: 50%;
+    height: 400px;
+    position: absolute;
+}
+
+#chat2{
+    width: 50%;
+    float: right;
+}

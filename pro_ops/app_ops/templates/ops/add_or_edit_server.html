@@ -1,0 +1,120 @@
+{% extends "ops/Base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="/static/css/alter.css">
+{% endblock %}
+
+{% block content %}     
+    
+<h5 id="h5_id">{% if info.id %}编辑{% else %}新增{% endif %}</h5>
+    <form id="content" method="POST">
+        {%csrf_token%}         
+            <table class="a">
+            <tr>
+                <td>产品编号：</td>
+                <td style="width:200px"><input type="text" name="productid" value="{{info.productid}}" autocomplete="off"></td>
+                <td>设备品牌：</td>
+                <td style="width:200px"><input type="text" name="brand" value="{{info.brand}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>设备名称：</td>
+                <td><input type="text" name="servername" value="{{info.servername}}" autocomplete="off"></td>
+                <td>设备型号：</td>
+                <td><input type="text" name="model" value="{{info.model}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>设备状态：</td>
+                <td><input type="text" name="status" value="{{info.status}}" autocomplete="off"></td>
+                <td>CPU型号：</td>
+                <td><input type="text" name="cpu_model" value="{{info.cpu_model}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>CPU颗数：</td>
+                <td><input type="text" name="cpu_quantity" value="{{info.cpu_quantity}}" autocomplete="off"></td>
+                <td>CPU核心：</td>
+                <td><input type="text" name="cpu_core" value="{{info.cpu_core}}" autocomplete="off"></td>
+            </tr> 
+            <tr>
+                <td>内存数量：</td>
+                <td><input type="text" name="memory_quantity" value="{{info.memory_quantity}}" autocomplete="off"></td>
+                <td>内存总量(GB)：</td>
+                <td><input type="text" name="memory_total" value="{{info.memory_total}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>SSD数量：</td>
+                <td><input type="text" name="ssd_quantity" value="{{info.ssd_quantity}}" autocomplete="off"></td>
+                <td>SSD总量(GB)：</td>
+                <td><input type="text" name="ssd_total" value="{{info.ssd_total}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>HDD数量：</td>
+                <td><input type="text" name="hdd_quantity" value="{{info.hdd_quantity}}" autocomplete="off"></td>
+                <td>HDD总量(TB)：</td>
+                <td><input type="text" name="hdd_total" value="{{info.hdd_total}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>raid模式：</td>
+                <td><input type="text" name="raid_type" value="{{info.raid_type}}" autocomplete="off"></td>
+                <td>IDRAC IP：</td>
+                <td><input type="text" name="idrac_ip" value="{{info.idrac_ip}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>购买日期：</td>
+                <td><input type="text" name="purchase_date" value="{{info.purchase_date}}" autocomplete="off"></td>
+                <td>质保终止：</td>
+                <td><input type="text" name="warranty_end" value="{{info.warranty_end}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>设备功能：</td>
+                <td><input type="text" name="function" value="{{info.function}}" autocomplete="off"></td>
+                <td>数据中心：</td>
+                <td><input type="text" name="data_center" value="{{info.data_center}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>网络接入：</td>
+                <td><input type="text" name="network" value="{{info.network}}" autocomplete="off"></td>
+                <td>idrac网络接入：</td>
+                <td><input type="text" name="idrac_network" value="{{info.idrac_network}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>机柜位置：</td>
+                <td><input type="text" name="rack" value="{{info.rack}}" autocomplete="off"></td>
+                <td>具体U位：</td>
+                <td><input type="text" name="rack_u" value="{{info.rack_u}}" autocomplete="off"></td>
+            </tr>
+            <tr style="display: none;">
+                <td><input type="text" name="mod" value="Server"></td>
+                <td><input type="text" name="id" {% if info.id %}value="{{info.id}}"{% else %}value="0"{% endif %}></td>
+            </tr>
+            </table>
+        
+            <br>
+            <br>
+            <button style="margin-left: 380px;" type="reset">清除</button>
+            <button style="margin-left: 20px;" type="button" id="btn_commit">提交</button>
+            <a class="re" href="/ops/server/" style="text-decoration: none;margin-left: 20px;"><button type="button">返回</button></a>         
+    </form> 
+
+    <script>
+        $("#li_server").css("background-color","rgb(46, 50, 54)")
+        $("#li_server a").css("color","white")
+
+        $("#btn_commit").click(function(){
+            var from_data = $("#content").serializeArray();
+            $.ajax({
+                url: '/ops/dml/',
+                type:'post',
+                data:from_data,
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        window.location.href = "/ops/server/add_or_edit_server/"
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

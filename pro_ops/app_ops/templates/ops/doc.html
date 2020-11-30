@@ -1,0 +1,513 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/doc.css">
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">文档列表</h5>
+<div id="dir_doc">
+    <div class="bk_query">
+        <span>
+            <input class="ip_query" type="text" name="na_query" value="{{query}}" autocomplete="off">
+        </span>
+        <span>
+            <button class="btn_query" id="btn_query">查询</button>
+        </span>
+    </div>
+    <p class="space" tag="public"><img src="/static/img/pro.png" align="absmiddle"> 项目空间</p>
+    <div>
+        <ul class="ul_dir" id="public_ul">
+            {% for pro in pros %}
+            <li id="public_dir_{{pro.id}}" class="li_dir" tag="{{pro.id}}" grade="{{pro.grade}}"><img class="img_dir" src="/static/img/right.png"><span>{{ pro.dirname }}</span></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <br>
+    <p class="space" tag="private"><img src="/static/img/pro.png" align="absmiddle"> 个人空间</p>
+    <div>
+        <ul class="ul_dir" id="private_ul">
+            {% for pri in private %}
+            <li id="private_dir_{{pri.id}}" class="li_dir" tag="{{pri.id}}" grade="{{pri.grade}}"><img class="img_dir" src="/static/img/right.png"><span>{{ pri.dirname }}</span></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div id="container">
+    <div id="doc_operation_area">
+        <p id="p_doc_title">{{doc_name}}</p>
+        <span class="sp_doc_label">作者：</span>
+        <span class="sp_doc_label_data" id="doc_author">{{doc_author}}</span>
+        <span class="sp_doc_label">创建时间：</span>
+        <span class="sp_doc_label_data" id="doc_createtime">{{doc_createtime}}</span>
+        <span class="sp_doc_label">最新更新时间：</span>
+        <span class="sp_doc_label_data" id="doc_editortime">{{doc_editortime}}</span>
+        <span><a href="#" id="doc_edit_id" tag="0">编辑</a></span>
+        </div> 
+    <div id="doc_content">{{main_html}}</div>
+</div>
+   
+<div>
+    <ul id="ul_space" class="ul_meu" tag="0">
+        <li id="li_crpro">新建项目</li>
+        <li id="perms"><a href="/ops/doc/perms/">权限管理</a></li>
+    </ul>
+    <ul id="ul_dir_meu" class="ul_meu" tag="0" grade="0" tag02='0'>
+        <li class="li_dir_option">新建文件夹</li>
+        <li class="li_dir_option">新建文档</li>
+        <li class="li_dir_option">重命名</li>
+        <li class="li_dir_option">删除</li>
+    </ul>
+
+    <ul id="ul_dir_meu_view" class="ul_meu" tag="0" grade="0" tag02='0'>
+        <li class="li_option_empty">新建文件夹</li>
+        <li class="li_option_empty">新建文档</li>
+        <li class="li_option_empty">重命名</li>
+        <li class="li_option_empty">删除</li>
+    </ul>
+
+    <ul id="ul_dir_meu_edit" class="ul_meu" tag="0" grade="0" tag02='0'>
+        <li class="li_dir_option">新建文件夹</li>
+        <li class="li_dir_option">新建文档</li>
+        <li class="li_dir_option">重命名</li>
+        <li class="li_option_empty">删除</li>
+    </ul>
+
+    <ul id="ul_text" class="ul_meu" tag='0' tag02='0'>
+        <li class="li_doc_option">重命名</li> 
+        <li class="li_doc_option">删除</li>
+    </ul>
+
+    <ul id="ul_text_view" class="ul_meu" tag='0' tag02='0'>
+        <li class="li_option_empty">重命名</li> 
+        <li class="li_option_empty">删除</li>
+    </ul>
+
+    <ul id="ul_text_edit" class="ul_meu" tag='0' tag02='0'>
+        <li class="li_doc_option">重命名</li> 
+        <li class="li_option_empty">删除</li>
+    </ul>
+</div>
+<script>
+    $("#li_doc").css("background-color","rgb(46, 50, 54)")
+    $("#li_doc a").css("color","white")
+
+    $("input.ip_query").blur(function(){
+        $(this).attr("value",$(this).val());
+    }) 
+
+    $("#dir_doc").bind("contextmenu", function(){
+        return false;
+    })
+
+    var main_txt = $("#doc_content").text()
+    $("#doc_content").html(main_txt)
+
+    $("#doc_edit_id").click(function(){
+        var id = $(this).attr('tag')
+        var url = "/ops/doc/get_perms/?option=2&id="+id
+        $.getJSON(url,function(submit){
+            user_perm = submit.perm
+            if (user_perm == 'view'){
+                alert('用户权限不足')
+            }else{
+                edit_url = "/ops/doc/add_or_edit/"+id+"/?option=1"
+                window.location.href = edit_url
+            }
+        })
+    })
+
+    //右键顶层项目弹出菜单选项
+    $(".space").on('mousedown',function(e){
+            var key=e.which;//获取鼠标键位
+            var label=$(this).attr("tag")
+            if(key==3){//1：代表左键；2：代表中键；3：代表右键
+                //获取右键点击坐标
+                var x=e.clientX;
+                var y=Number(e.clientY)-10;
+                $("#ul_space").attr("tag",label)
+                $("#ul_space").show().css({left:x,top:y});
+                $("#ul_dir_meu").hide()
+                $("#ul_text").hide()
+            }
+    })
+
+    //右键文件夹弹出菜单选项
+    var right_click_bind = ()=>{
+        $('.li_dir span').off('mousedown').on('mousedown',function(e){
+            var key=e.which;//获取鼠标键位
+            var pro=$(this).parent().attr("tag")
+            var grade=$(this).parent().attr("grade")
+            var dof = $(this).parent().attr("id").split('_')[0]
+            url = '/ops/doc/get_perms/?option=1&id='+pro
+            if(key==3){//1：代表左键；2：代表中键；3：代表右键
+                //获取右键点击坐标
+                var x=e.clientX;
+                var y=Number(e.clientY)-12;
+                if(x > 98){
+                    x = 98
+                }
+                if (dof == 'public'){
+                    $.getJSON(url,function(event){
+                        perm = event.perm
+                        if (perm == 'view'){
+                            meu = "#ul_dir_meu_view"
+                            text_meu = "#ul_text_view"
+                        }else if (perm == 'edit'){
+                            meu = "#ul_dir_meu_edit"
+                            text_meu = "#ul_text_edit"
+                        }else if (perm == 'owner'){
+                            meu = "#ul_dir_meu"
+                            text_meu = "#ul_text"
+                        }else{
+                            return false
+                        }
+                        if (meu == ''){
+                            return false
+                        }else{
+                            $(meu).attr("tag",pro)
+                            $(meu).attr("grade",grade)
+                            $(meu).attr("tag02",dof)
+                            $(meu).show().css({left:x,top:y});
+                            $("#ul_space").hide()
+                            $(text_meu).hide()
+                        }
+                    })
+                }else{
+                    meu = "#ul_dir_meu"
+                    $(meu).attr("tag",pro)
+                    $(meu).attr("grade",grade)
+                    $(meu).attr("tag02",dof)
+                    $(meu).show().css({left:x,top:y})
+                    $("#ul_space").hide()
+                    $("#ul_text").hide()
+                }
+                    
+            }
+        })
+    }
+    right_click_bind()
+
+    //右键文件弹出菜单选项
+    var file_right_click_bind = ()=>{
+        $('.li_doc').off('mousedown').on('mousedown',function(e){
+            var key=e.which;//获取鼠标键位
+            var id=$(this).attr("tag")
+            var dof = $(this).attr("id").split('_')[0]
+            url = "/ops/doc/get_perms/?option=2&id="+id
+            if(key==3){//1：代表左键；2：代表中键；3：代表右键
+                //获取右键点击坐标
+                var x=e.clientX;
+                var y=Number(e.clientY)-12;
+                if(x > 98){
+                    x = 98
+                }
+                if (dof == 'public'){
+                    $.getJSON(url,function(event){
+                        perm = event.perm
+                        if (perm == 'view'){
+                            meu = "#ul_text_view"
+                            dir_meu = "#ul_dir_meu_view"
+                        }else if (perm == 'edit'){
+                            meu = "#ul_text_edit"
+                            dir_meu = "#ul_dir_meu_edit"
+                        }else if (perm == 'owner'){
+                            meu = "#ul_text"
+                            dir_meu = "#ul_dir_meu"
+                        }else{
+                            return false
+                        }
+                        if (meu == ''){
+                            return false
+                        }else{
+                            $(meu).attr("tag",id)
+                            $(meu).attr("tag02",dof)
+                            $(meu).show().css({left:x,top:y});
+                            $("#ul_space").hide()
+                            $(dir_meu).hide()
+                        }
+                    })
+                }else{
+                    meu = "#ul_text"
+                    $(meu).attr("tag",id)
+                    $(meu).attr("tag02",dof)
+                    $(meu).show().css({left:x,top:y});
+                    $("#ul_space").hide()
+                    $("#ul_dir_meu").hide()
+                }  
+            }else if(key == 1){
+                url = '/ops/doc/'+id
+                $.getJSON(url,function(submit){
+                    $('#p_doc_title').text(submit.doc_name)
+                    $('#doc_content').html(submit.doc_content)
+                    $('#doc_author').text(submit.doc_author)
+                    $('#doc_createtime').text(submit.doc_createtime)
+                    $('#doc_editortime').text(submit.doc_editortime)
+                    $('#doc_edit_id').attr("tag",id)
+                })
+            }
+        })
+    }
+    file_right_click_bind()
+
+    //点击展开收起图标
+    $(document).on("click",".img_dir",function(){
+        var icon = $(this).attr("src")
+        var id = $(this).parent().attr("tag")
+        var parent_id = '#'+$(this).parent().attr("id")
+        var grade = $(this).parent().attr("grade")
+        var dof = $(this).parent().attr("id").split('_')[0]
+        if (icon == "/static/img/right.png"){//判断文件现在的状态，展开或者收起
+            $(this).attr("src","/static/img/drop.png")
+            grade++
+            
+            $.ajax({//向后端请求下级目录及文档信息
+            type:"POST",
+            url: "/ops/doc/list_dir/",
+            traditional:true,
+            data:{id: id, csrfmiddlewaretoken: '{{ csrf_token }}',},
+            success:function(submit){
+                if (submit.code == 200){
+                    var list = submit.directory
+                    var docs = submit.docs
+                    if (list.length > 0 || docs.length> 0){
+                        $(parent_id).append("<ul id='dir_"+grade+"_"+id+"' class='ul_dir'></ul>")   //展开文件夹时添加空的下拉列表
+                        for(var i = 0; i < list.length; i++){
+                            var dirgrade = '#dir_'+grade+'_'+id
+                            //添加下级文件夹
+                            $(dirgrade).append("<li class='li_dir' id="+dof+'_dir_'+list[i].id+" tag="+list[i].id+" grade="+list[i].grade+"><img class='img_dir' src='/static/img/right.png'><span>"+list[i].dirname+"</span></li>")
+                            right_click_bind() //给新添加的元素绑定右键事件
+                        }
+                        for(var i = 0; i < docs.length; i++){
+                            var dirgrade = '#dir_'+grade+'_'+id
+                            //添加下级文档
+                            $(dirgrade).append("<li class='li_doc' id="+dof+'_doc_'+docs[i].id+" tag="+docs[i].id+"><img class='img_doc' src='/static/img/doc.png'><span>"+docs[i].filename+"</span></li>")
+                            file_right_click_bind() //绑定右键事件
+                        }
+                    }else{
+                        return false
+                    }
+                    
+                }
+                else{
+                    alert(submit.msg)
+                }
+            }
+            })    
+        }else{//收起文件夹
+            $(this).attr("src","/static/img/right.png")
+            grade++
+            var dirgrade = '#dir_'+grade+'_'+id
+            $(dirgrade).remove()
+        }
+        
+    })
+
+        //点击任意部位隐藏菜单选项
+    $(document).on('click',function(){
+        $('.ul_meu').hide();
+        $('.ul_meu_view').hide()
+    })
+
+    //项目菜单选项配置
+    $("#li_crpro").click(function(){
+        var proname = prompt("请输入项目名称：")
+        var label = $(this).parent().attr("tag")
+        var id = '0'
+        if (proname){//创建新的文件夹，给后端传递数据
+            $.ajax({
+            type:"POST",
+            url: "/ops/doc/create_project/",
+            traditional:true,
+            data:{id: id, dirname: proname, parentid: '0', grade: '0', label: label, csrfmiddlewaretoken: '{{ csrf_token }}',},
+            success:function(submit){
+                if (submit.code == 200){//后端数据创建成功后，前端更新文件夹列表
+                    var proid = label+'_dir_'+submit.id
+                    var ul = '#'+label+'_ul'
+                    $(ul).append("<li class='li_dir' id="+proid+" tag="+submit.id+" grade="+submit.grade+"><img class='img_dir' src='/static/img/right.png'><span>"+proname+"</span></li>")
+                    right_click_bind()
+                }
+                else{
+                    alert(submit.msg)
+                }
+            }
+            }) 
+        }else if(proname === ""){
+            alert("项目名称不能为空")
+        }else{
+            return false
+        }        
+    })
+
+    //文件夹菜单选项配置
+    $(".li_dir_option").click(function(){
+        var proid = $(this).parent().attr("tag")
+        var grade = $(this).parent().attr("grade")
+        var dof = $(this).parent().attr("tag02")
+        grade++
+        var option = $(this).html()
+        if (option == "新建文件夹"){
+            var new_dir = prompt("请输入文件夹名称")
+            if (new_dir){
+            $.ajax({
+            type:"POST",
+            url: "/ops/doc/create_dir/",
+            traditional:true,
+            data:{id: '0', dirname: new_dir, parentid: proid, grade: grade, csrfmiddlewaretoken: '{{ csrf_token }}',},
+            success:function(submit){
+                if (submit.code == 200){
+                    var ul = 'dir_'+grade+'_'+proid
+                    var ul_id = '#'+ul
+                    var par_id = '#'+dof+'_dir_'+proid
+                    if($(ul_id).length == '0'){//判断是否已存在下拉列表，不存在先添加空列表，再更新列表
+                        $(par_id).append("<ul id="+ul+" class='ul_dir'></ul>")
+                        $(ul_id).append("<li class='li_dir' id="+dof+"_dir_"+submit.id+" tag="+submit.id+" grade="+grade+"><img class='img_dir' src='/static/img/right.png'><span>"+new_dir+"</span></li>")
+                    }else{
+                        ul = ul_id+' > .li_doc'
+                        if ($(ul).first().length > 0){//判断当前目录是否存在文档，如果有，新创建的文件夹展示在文档之上
+                            $(ul).first().before("<li class='li_dir' id="+dof+"_dir_"+submit.id+" tag="+submit.id+" grade="+grade+"><img class='img_dir' src='/static/img/right.png'><span>"+new_dir+"</span></li>")
+                        }else{//不存在文档，直接添加
+                            $(ul_id).append("<li class='li_dir' id="+dof+"_dir_"+submit.id+" tag="+submit.id+" grade="+grade+"><img class='img_dir' src='/static/img/right.png'><span>"+new_dir+"</span></li>") 
+                        }
+                    }
+                    right_click_bind()//绑定右键事件
+                }
+                else{
+                    alert(submit.msg)
+                }
+            }
+            }) 
+            }else if(new_dir === ""){
+            alert("文件夹名称不能为空")
+            }else{
+            return false
+            }        
+        }
+        else if(option == "新建文档"){
+            var new_doc = prompt("请输入文档名称")
+            if (new_doc){
+            $.ajax({
+            type:"POST",
+            url: "/ops/doc/add_or_edit/0",
+            traditional:true,
+            data:{filename: new_doc, directory: proid, csrfmiddlewaretoken: '{{ csrf_token }}',},
+            success:function(submit){
+                if (submit.code == 0){
+                    var doc_id = submit.doc_id
+                    var ul = 'dir_'+grade+'_'+proid
+                    var ul_id = '#dir_'+grade+'_'+proid
+                    var par_id = '#'+dof+'_dir_'+proid
+                    if($(ul_id).length == '0'){//往列表中添加文档
+                        $(par_id).append("<ul id="+ul+" class='ul_dir'></ul>")
+                        $(ul_id).append("<li class='li_doc' id="+dof+"_doc_"+submit.id+" tag="+submit.id+"><img class='img_doc' src='/static/img/doc.png'><span>"+new_doc+"</span></li>")
+                    }else{
+                        $(ul_id).append("<li class='li_doc' id="+dof+"_doc_"+submit.id+" tag="+submit.id+"><img class='img_doc' src='/static/img/doc.png'><span>"+new_doc+"</span></li>")
+                    }
+                    file_right_click_bind()
+                    var url = "/ops/doc/add_or_edit/"+doc_id
+                    window.location.href = url
+                }
+                else{
+                    alert(submit.msg)
+                }
+            }
+            }) 
+            }else if(new_doc === ""){
+            alert("文档名称不能为空")
+            }else{
+            return false
+            }
+        }
+        else if(option == "重命名"){//重命名文件夹
+            var new_name = prompt('请输入新的名称')
+            if(new_name){
+                $.ajax({
+                type:"POST",
+                url: "/ops/doc/rename/",
+                traditional:true,
+                data:{id: proid, new_name: new_name, type:'0', csrfmiddlewaretoken: '{{ csrf_token }}',},
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        var text = '#'+dof+'_dir_'+proid+' span'
+                        $(text).html(new_name)
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+                })
+            }
+        }
+        else{//删除文件夹
+            $.ajax({
+                type:"POST",
+                url: "/ops/doc/delete/",
+                traditional:true,
+                data:{id: proid, type:'0', csrfmiddlewaretoken: '{{ csrf_token }}',},
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        var text = '#'+dof+'_dir_'+proid
+                        $(text).remove()
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+                })
+        }    
+    })
+
+    //文件菜单选项配置
+    $(".li_doc_option").click(function(){
+        var docid = $(this).parent().attr("tag")
+        var option = $(this).html()
+        var dof = $(this).parent().attr("tag02")
+        if(option == '重命名'){//重命名文档
+            var new_name = prompt('请输入新的名称')
+            if (new_name){
+                $.ajax({
+                type:"POST",
+                url: "/ops/doc/rename/",
+                traditional:true,
+                data:{id: docid, new_name: new_name, type:'1', csrfmiddlewaretoken: '{{ csrf_token }}',},
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        var text = '#'+dof+'_doc_'+docid+' span'
+                        $(text).html(new_name)
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+                })
+            }else if (new_name === ''){
+                alert('文件名称不能为空')
+            }else{
+                return false
+            }   
+        }else{//删除文档
+            $.ajax({
+                type:"POST",
+                url: "/ops/doc/delete/",
+                traditional:true,
+                data:{id: docid, type:'1', csrfmiddlewaretoken: '{{ csrf_token }}',},
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        var text = '#'+dof+'_doc_'+docid
+                        $(text).remove()
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+                })
+        }
+    })
+</script>
+{% endblock %}
+
+

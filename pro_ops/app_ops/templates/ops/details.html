@@ -1,0 +1,64 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/details.css">
+
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">文档详情</h5>
+    <div id="container">
+        <div id="bk_title">
+           <h4>{{info.title}}</h4>
+        </div>
+
+            <div class="tag">
+                <p>
+                    <span>作者：{{info.author}}</span>
+                </p>
+                <p>
+                    <span>创建时间：{{info.createtime}}</span>
+                </p>
+                <p>
+                    <span>最新编辑时间：{{info.editortime}}</span>
+                </p>
+            </div>
+
+        <div id="bk_content">
+            <div id="notetext">{{info.content}}</div>   
+        </div>
+        <br>
+        <div class="bk_alter">
+            {% if perms.app_ops.change_doc %}
+            <a href="/ops/doc/add_or_edit_doc/{{info.id}}/"><button class="editor">修改</button></a>
+            {% endif %}
+            {% if perms.app_ops.delete_doc %}
+            &emsp;&emsp;<button class="editor" id="btn_del">删除</button>
+            {% endif %}
+        </div>
+       
+    </div>
+
+    <script type="text/javascript">
+        $("#li_doc").css("background-color","rgb(46, 50, 54)")
+        $("#li_doc a").css("color","white")
+
+        var obj = document.getElementById("notetext");
+        obj.innerHTML = obj.innerText;//这样重新设置html代码为解析后的格式
+ 
+        $("#btn_del").click(function(){
+            url = "/ops/dml/?id="+'{{info.id}}&mod=Doc'
+            $.getJSON(url,function(status){
+                if(status.code == 0){
+                    alert("删除成功")
+                    window.location.href = "/ops/doc/"
+                }
+                else{
+                    alert("操作失败")
+                }
+            })
+        })
+    </script>
+
+{% endblock %}
+
+

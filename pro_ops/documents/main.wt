@@ -1,0 +1,15 @@
+<p><font size="2"><b>主页</b><span><o:p></o:p></span></font></p><p><font size="2">&nbsp;&nbsp;&nbsp; 
+<p><font size="2"><b>从故障的来源来分类</b><span><o:p></o:p></span></font></p><p><font size="2">&nbsp;&nbsp;&nbsp; 内部故障<span><span></span>由于公司自己信息系统本身故障导致，或者非外部故障<o:p></o:p></span></font></p><p><font size="2">&nbsp;&nbsp;&nbsp; 外部故障<span><span></span>由于运营商的故障导致<o:p></o:p></span></font></p><p><font size="2"><o:p>&nbsp;</o:p></font></p><p><font size="2"><b>影响业务人数</b><span><o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 一级故障
+影响4000人以上<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 二级故障
+影响3000-4000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 三级故障
+影响2000-3000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 四级故障
+影响1000-2000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 五级故障
+影响4000人以上<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 二级故障
+影响3000-4000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 三级故障
+影响2000-3000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 四级故障
+影响1000-2000人<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 五级故障
+影响1000人以下<o:p></o:p></span></font></p><p><font size="2"><o:p>&nbsp;</o:p></font></p><p><font size="2"><b>分级业务可用类</b><span><o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 一级故障
+业务中断3小时以上<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 二级故障
+业务中断2-3小时以上<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 三级故障
+业务中断1-2小时以上<o:p></o:p></span></font></p><p><font size="2"><span>&nbsp;&nbsp;&nbsp; 四级故障
+业务中断1小时以下<o:p></o:p></span></font></p><p><font size="2"><o:p>&nbsp;</o:p></font></p><p><font size="2"><b>故障产生原因（内部故障）</b><span><o:p></o:p></span></font></p><p><!--[if--><font size="2"><span>&nbsp;&nbsp;&nbsp; 1.</span>基础网络<span><span></span>和网络设备相关，硬件问题，配置问题，不能正常获取IP，线路故障，人为环路等导致<o:p></o:p></span></font><!--[endif]--></p><p><!--[if--><font size="2"><span>&nbsp;&nbsp;&nbsp; 2.</span>服务器故障<span><span></span>服务器硬件问题，服务器操作系统问题，服务器配置问题等导致<o:p></o:p></span></font><!--[endif]--></p><p style="line-height:1.15;"><!--[if--><font size="2"><span>&nbsp;&nbsp;&nbsp; 3.</span>应用服务运行故障</font><!--[endif]--><span><font size="2"><span></span>应用配置问题，版本升级问题，应用数据丢失问题，数据管理问题</font><o:p></o:p></span></p>

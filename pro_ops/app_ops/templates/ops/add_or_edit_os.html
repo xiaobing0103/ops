@@ -1,0 +1,118 @@
+{% extends "ops/Base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="/static/css/appendo.css">
+{% endblock %}
+
+{% block content %}     
+<h5 id="h5_id">{% if info.id %}编辑{% else %}新增{% endif %}</h5>
+    <form id="content" method="POST">
+            {%csrf_token%}
+        <table class="a">
+            <tr>
+                <td>产品编号：</td>
+                <td style="width:200px"><input type="text" name="productid" value="{{info.productid}}" autocomplete="off"></td>
+                <td>机器类型：</td>
+                <td style="width:200px"><input list="type_list" name="server_type" value="{{info.server_type}}" autocomplete="off">
+                    <datalist id="type_list">
+                        <option value="物理机">
+                        <option value="虚拟机">
+                    </datalist>
+                </td>
+            </tr>
+            <tr>
+                <td>主机名：</td>
+                <td><input type="text" name="hostname" value="{{info.hostname}}" autocomplete="off"></td>
+                <td>操作系统：</td>
+                <td><input list="os_list" name="system_version" value="{{info.system_version}}" autocomplete="off">
+                    <datalist id="os_list">
+                        <option value="VMware ESXI 6.5">
+                        <option value="VMware ESXI 6.0">
+                        <option value="Centos 7">
+                        <option value="Ubuntu 16.04">
+                        <option value="Ubuntu 18.08">
+                        <option value="Windows Server 2008 R2">
+                        <option value="Windows Server 2012 R2">
+                        <option value="windows 7">
+                    </datalist>
+                </td>  
+            </tr> 
+            <tr>
+                <td>状态：</td>
+                <td><input type="text" name="status" value="{{info.status}}" autocomplete="off"></td>
+                <td>内核信息：</td>
+                <td><input type="text" name="kernel" value="{{info.kernel}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>CPU核心(颗)：</td>
+                <td><input type="text" name="core_quantity" value="{{info.core_quantity}}" autocomplete="off"></td>
+                <td>内存(GB)：</td>
+                <td><input type="text" name="memory" value="{{info.memory}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>硬盘(GB)：</td>
+                <td><input type="text" name="hdd" value="{{info.hdd}}" autocomplete="off"></td>
+                <td>VLAN：</td>
+                <td><input type="text" name="vlan" value="{{info.vlan}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>IP：</td>
+                <td><input type="text" name="ip" value="{{info.ip}}" autocomplete="off"></td>
+                <td>宿主机：</td>
+                <td><input type="text" name="esxi_ip" value="{{info.esxi_ip}}" autocomplete="off"></td> 
+            </tr>
+            <tr>
+                <td>应用信息：</td>
+                <td><input type="text" name="application" value="{{info.application}}" autocomplete="off"></td>
+                <td>应用负责人：</td>
+                <td><input type="text" name="administrator" value="{{info.administrator}}" autocomplete="off"></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td><input type="text" name="remarks" value="{{info.remarks}}" autocomplete="off"></td> 
+                <td>监控状态：</td>
+                <td>
+                    &ensp;&ensp;
+                    <label class="switch">
+                        <input type="checkbox" tag="{{info.ip}}" class="zabbix_status"  {% ifequal info.zbx_stau 'on' %}checked{%endifequal%}> 
+                        <div class="slider">
+                            <span class="on">on</span>
+                            <span class="off">off</span>
+                        </div>
+                    </label>
+                </td>
+            </tr>
+            <tr style="display: none;">
+                <td><input type="text" name="mod" value="Os" autocomplete="off"></td>
+                <td><input type="text" name="id" {% if info.id %}value="{{info.id}}"{% else %}value="0"{% endif %}></td>
+            </tr>
+        </table>
+        <br>
+        <button style="margin-left: 350px;" type="reset">清除</button>
+        <button style="margin-left: 20px;" type="button" id="btn_commit">提交</button>
+        <a class="re" href="/ops/os/" style="text-decoration: none;margin-left: 20px;"><button type="button">返回</button></a>
+    </form>
+
+    <script>
+        $("#li_os").css("background-color","rgb(46, 50, 54)")
+        $("#li_os a").css("color","white")
+
+        $("#btn_commit").click(function(){
+            var from_data = $("#content").serializeArray();
+            $.ajax({
+                url: '/ops/dml/',
+                type:'post',
+                data:from_data,
+                success:function(submit){
+                    if (submit.code == 200){
+                        alert(submit.msg)
+                        window.location.href = "/ops/os/add_or_edit_os/"
+                    }
+                    else{
+                        alert(submit.msg)
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

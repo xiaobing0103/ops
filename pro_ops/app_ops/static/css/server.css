@@ -1,0 +1,56 @@
+h5{
+    background-color: rgb(228, 233, 240);
+    margin: 0;
+    padding: 5px 10px;
+    margin-left: 0;
+    border-bottom-style: solid;
+    border-width: 1px;
+}
+
+button{
+    font-size: 9pt;
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer; 
+    border-radius: 2px; 
+}
+
+.ipt_server_query{
+    width: 180px;
+    height: 18px;
+    border-radius: 2px;
+    border: 1px solid rgba(33, 34, 34, 0.767);
+}
+
+table.tb{
+    border-collapse: collapse;
+    margin-left:20px;
+    margin-right:20px;
+    border:1px solid black;
+    text-align:center;
+}
+table.tb td{
+    font-size:8pt;
+    border:1px solid black;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+table.tb th{
+    border:1px solid black;
+    font-size: 9pt;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:rgb(152, 157, 165);
+}
+
+input.box{
+    width:15px;
+
+}

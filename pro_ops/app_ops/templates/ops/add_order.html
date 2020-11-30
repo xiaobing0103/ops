@@ -1,0 +1,102 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/add_order.css">
+{% endblock %}
+     
+{% block content %}
+    <h5 id="h5_id">新增</h5>
+    <div id="container">
+        <div class="blk_add_content">
+            <p>工单标题：</p>
+            <input type="text" class="ipt_add_content" id="ipt_add_order_title" autocomplete="off">
+        </div>
+        <div class="blk_add_content">
+            <p>变更内容：</p>
+            <textarea name="" id="ta_add_order_content" cols="110" rows="5"></textarea>
+        </div>
+        <div class="blk_add_content">
+            <p>变更窗口：</p>
+            <input type="text" class="ipt_add_content" id="ipt_add_order_cwt" autocomplete="off" placeholder="2020-01-01 18:00 -- 2020-01-01 20:00">
+        </div>
+        <div class="blk_add_content">
+            <p>变更影响：</p>
+            <textarea name="" id="ta_add_order_effect" cols="110" rows="3"></textarea>
+        </div>
+        <div class="blk_add_content">
+            <p>回滚操作：</p>
+            <textarea name="" id="ta_add_order_rollback" cols="110" rows="3"></textarea>
+        </div>
+        <div class="blk_add_content">
+            <p>审核人：</p>
+            <select name="" id="st_add_order">
+                <option value="" disabled selected>请选择</option>
+                {% for user in info %}
+                <option value="{{ user }}">{{ user }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="blk_add_content">
+            <span><button class="btn_add_order" id="btn_create">创建</button></span>
+            &ensp;&ensp;
+            <span><a href="/ops/cmanage/"><button class="btn_add_order">返回</button></span></a>
+        </div>
+        <script>
+ 
+            $("#li_cmanage").css("background-color","rgb(46, 50, 54)")
+            $("#li_cmanage a").css("color","white")
+
+            $("input.ip_query").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+  
+            $("#btn_create").click(function(){
+                var t = new Date()
+                var hour = t.getHours()
+                var minute = t.getMinutes()
+                var second = t.getSeconds()
+                var datetime = hour+((minute<10)?":0":":")+minute+((second<10)?":0":":")+second
+                var title = $("#ipt_add_order_title").val()
+                var content = $("#ta_add_order_content").val()
+                var witime = $("#ipt_add_order_cwt").val()
+                var effect = $("#ta_add_order_effect").val()
+                var rollback = $("#ta_add_order_rollback").val()
+                var reviewer = $("#st_add_order").val()
+                var id = 0
+                var mod = 'Cmanage'
+                var author = "{{fullname}}"
+                var statu = '审核中'
+                $.ajax({
+                            type:"POST",
+                            url: "/ops/dml/",
+                            data:{
+                                'title': title,
+                                'content': content,
+                                'witime': witime,
+                                'effect': effect,
+                                'rollback': rollback,
+                                'reviewer': reviewer,
+                                'ctime': datetime,
+                                'author': author,
+                                'statu': statu,
+                                'id': id,
+                                'mod': mod,
+                                csrfmiddlewaretoken:'{{ csrf_token }}'
+                            },
+                            success:function(submit){
+                                if (submit.code == 200)
+                                {
+                                    alert("工单创建成功")
+                                    window.location.href = "/ops/cmanage/"
+                                }
+                                else
+                                {
+                                    alert("工单创建失败")
+                                }
+                            }
+                        })
+            })
+        </script>
+    </div>
+{% endblock %}
+
+

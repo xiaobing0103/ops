@@ -1,0 +1,87 @@
+.group_details{
+    margin-left: 30px;
+    margin-top: 50px;
+    /* font-size: 10pt; */
+    width: 80%;
+    font-size: 9pt;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(228, 233, 240);
+    border-radius: 2px;
+}
+
+.group_list{
+    margin: 20px 0px;
+}
+
+#group_member_list{
+    width: 700px;
+    height: 150px;
+    border-style: solid;
+    border-color:  rgb(110, 114, 117);
+    border-width: 0.5px;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.lab_group_list{
+    display: inline-block;
+    width: 80px;
+    margin-left: 20px;
+}
+
+table td{
+    vertical-align: top;
+    padding: 0;
+}
+
+.group_select{
+    width: 150px;
+    height: 26px;
+    border-color:  rgb(110, 114, 117);
+    border-width: 1px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.ipt_group_info{
+    width: 130px;
+    height: 18px;
+    border-radius: 2px;
+    border-style: solid;
+    border-color:  rgb(110, 114, 117);
+    border-width: 1px;
+}
+
+.sp_group_user_list{
+    background-color: rgb(240, 93, 68);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    margin: 2px 2px;
+    display: inline-block;
+}
+
+.btn_del_group_user{
+    padding: 0px 6px;
+    border: none;
+    background-color: rgb(240, 93, 68);
+    color: white;
+}
+
+#ipt_add_user{
+    border-radius: 3px;
+    margin-bottom: 10px;
+    border-style: solid;
+    border-width: 1px;
+    width: 250px;
+    height: 18px;
+    border-color:  rgb(110, 114, 117);
+}
+
+.p_group_info{
+    padding: 8px 5px;
+    margin-top: 1px;
+    font-weight: 500;
+    background-color: rgb(228, 233, 240);
+}

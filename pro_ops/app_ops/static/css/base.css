@@ -1,0 +1,180 @@
+html,body{
+    margin: 0;
+    padding: 0;
+    font-family: 微软雅黑;
+}
+
+#h5_id{
+    background-color: rgb(228, 233, 240);
+    margin: 0;
+    padding: 5px 10px;
+    margin-left: 2px;
+    margin-top: 0;
+    border-bottom-style: solid;
+    border-width: 1px;
+}
+
+ h3{
+    background-color: rgb(82, 88, 95);
+    color: ghostwhite;
+    padding: 0 5px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0;
+    border-bottom-style: groove;
+}
+ 
+ ul.list{
+    position: absolute;
+    /* top: 55px;
+    bottom: 0;
+    left: 0; */
+    list-style-type: none;
+    margin:0;
+    padding:0;
+    height: 50px;
+    /* width: 200px; */
+    width: 100%;
+    /* background-color: rgb(228, 233, 240); */
+    background-color: rgb(82, 88, 95);
+    font-size: 10pt;
+}
+
+ul.list li {
+    float: left;
+    
+}
+
+ul.list li a{
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 16px 16px;
+    text-align: center;
+}
+
+ul.list li a:hover:not(.active){
+    background-color: rgb(46, 50, 54);
+    color: white;
+}
+
+.bk_base{
+    position: relative;
+    right: 0;
+    top: 52px;
+    bottom: 0;
+    padding: 0;
+    /* overflow-y: scroll; */
+}
+
+#blk_hidden{
+    position: absolute;
+    left: 200px;
+    width: 10px;
+    top: 55px;
+    bottom: 0;
+    cursor: pointer;
+    background-color: rgb(211, 217, 224);
+}
+
+#p_hidden{
+    position: relative;
+    margin: 0;
+    top: 40%;
+}
+
+table.a{
+    font-size: 9pt;
+    padding-top: 12px;
+    border-collapse:separate; 
+    border-spacing:1px 10px;
+    margin-left: 15px;
+}
+
+table.cssh5{
+    border-collapse: separate;
+    padding: 0;
+    margin: 0;
+    border-style: solid;
+    border: 1px;
+}
+
+table.td{
+    padding: 10px;
+}
+
+input{
+    color: rgba(7, 7, 7, 0.89);
+    padding: 3px 0px;
+    font-size: 9pt;
+    font-family:"微软雅黑";
+    text-indent: 5px;
+}
+
+.blk_btn_set{
+    margin-left: 20px;
+}
+
+table.common{
+    border-collapse: collapse;
+    margin-left:20px;
+    margin-right:20px;
+    border:1px solid black;
+    text-align:center;
+}
+table.common td{
+    font-size:8pt;
+    border:1px solid black;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+table.common th{
+    border:1px solid black;
+    font-size: 9pt;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:rgb(152, 157, 165);
+}
+
+.dropdown-content a:hover {background-color: rgb(228, 233, 240)}
+
+.dropdown-content {
+    z-index: 99999;
+    display: none;
+    position: absolute;
+    /* background-color: #f9f9f9; */
+    background-color: rgb(82, 88, 95);
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 0px 10px;
+    text-decoration: none;
+    display: block;
+    line-height: 30px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+a.ah_user{
+    padding: 8px;
+}
+
+button{
+    font-size: 9pt;
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 4px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer; 
+    border-radius: 2px;  
+}

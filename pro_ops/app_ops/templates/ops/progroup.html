@@ -1,0 +1,72 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/progroup.css">
+
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">权限配置</h5>
+    <div id="container">
+        <br>
+        <br>
+        <div class="blk_edit_pd">
+            <p><button><a href="/ops/doc/add_or_edit_group/0/">新增权限组</a></button></p>
+            <table>
+                <tr>
+                    <th>序号</th>
+                    <th>用户组名称</th>
+                    <th>所属项目</th>
+                    <th>用户组权限</th>
+                    <th>操作</th>
+                </tr>
+                {% for list in group_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ list.group.group }}</td>
+                    <td>{{ list.project.dirname }}</td>
+                    <td title=>{{ list.perm }}</td>
+                    <td><a href="/ops/doc/add_or_edit_group/{{list.group.id}}">编辑</a>&emsp;
+                        {% ifnotequal list.perm 'owner' %}
+                        <a href="#" class="delete_group" id="group_{{ list.group.id }}" tag="{{ list.group.id }}">删除</a>
+                        {% endifnotequal %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+        </div>
+        <br><br>
+        {% if perms.change_permission %}
+        <div class="blk_edit_pd">
+            <p class="p_edit_pd">权限管理</p>
+            
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        $("#li_doc").css("background-color","rgb(46, 50, 54)")
+        $("#li_doc a").css("color","white")
+
+        $(".delete_group").click(function(){
+            var group_id = $(this).attr("tag")
+            var res = confirm("确定删除权限组")
+            if (res == true){
+                url = "/ops/doc/update_group/?option=3&group_id="+group_id
+                $.getJSON(url,function(event){
+                    if (event.code == 0){
+                        var record = "#group_"+group_id
+                        $(record).parent().parent().remove()
+                    }
+                    else{
+                        alert(event.msg)
+                    }
+                })
+            }
+        })
+
+      
+  
+    </script>
+{% endblock %}
+
+

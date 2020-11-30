@@ -1,0 +1,134 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<script src="/static/js/highcharts.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+{% endblock %}
+     
+{% block content %}
+<script>
+    $("#li_main").css("background-color","rgb(46, 50, 54)")
+    $("#li_main a").css("color","white")
+</script>
+<h5 id="h5_id">主页</h5>
+    <div id="container">
+        <div id="chat1">
+            <script>
+                $(document).ready(function() {
+                    var dt = "{{data}}"
+                    var chart = {
+                        type: 'column'
+                    };
+                    var title = {
+                        text: '服务器分布'   
+                    };
+                    // var subtitle = {
+                    //     text: 'Source: runoob.com'  
+                    // };
+                    var xAxis = {
+                        categories: ['总部6F','总部7F','新化','日业','鑫远','公园道'],
+                        crosshair: true
+                    };
+                    var yAxis = {
+                        min: 0,
+                        title: {
+                            text: '服务器数量(台)'
+                        }      
+                    };
+                    var tooltip = {
+                        headerFormat: '<span style="font-size:11px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.f} 台</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    };
+                    var plotOptions = {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    };  
+                    var credits = {
+                        enabled: false
+                    };
+                    
+                    var series= [{
+                            name: '数据中心',
+                                data: eval(dt)
+                            }
+                    ];     
+                        
+                    var json = {};   
+                    json.chart = chart; 
+                    json.title = title;   
+                    // json.subtitle = subtitle; 
+                    json.tooltip = tooltip;
+                    json.xAxis = xAxis;
+                    json.yAxis = yAxis;  
+                    json.series = series;
+                    json.plotOptions = plotOptions;  
+                    json.credits = credits;
+                    $('#chat1').highcharts(json);
+                });
+            </script>
+        </div>
+        <div id="chat2">
+            <script>
+                $(document).ready(function() {
+                    var ot1 = "{{ot.Esxi}}"
+                    var ot2 = "{{ot.Linux}}"
+                    var ot3 = "{{ot.Windows}}"
+                    var ot4 = "{{ot.Others}}"
+                    var chart = {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                    };
+                    var title = {
+                        text: '操作系统类型分布'   
+                    };      
+                    // var tooltip = {
+                    //     pointFormat: '{series.name}: <b>{ponit.y,0}套</b>'
+                    // };
+                    var plotOptions = {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                color: ['#4dd3b9','#fdd67f','#ffaca8','#64bcec']
+                                // color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    };
+                    var series= [{
+                        type: 'pie',
+                        name: 'OS',
+                        data: 
+                        
+                        [
+                            ['Esxi',eval(ot1)],
+                            ['Linux',eval(ot2)],
+                            ['Windows',eval(ot3)],
+                            ['Others',eval(ot4)]
+                        ]
+                    }];     
+                        
+                    var json = {};   
+                    json.chart = chart; 
+                    json.title = title;     
+                    // json.tooltip = tooltip;  
+                    json.series = series;
+                    json.plotOptions = plotOptions;
+
+                    $('#chat2').highcharts(json);
+                });
+            </script>
+        </div>
+    </div>
+{% endblock %}
+
+

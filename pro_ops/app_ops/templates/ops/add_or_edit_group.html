@@ -1,0 +1,160 @@
+{% extends "ops/Base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/add_group.css">
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">用户组配置</h5>
+    <form id="doc_group_info">
+        <div class="group_details">
+            <p class="p_group_info">用户组配置</p>
+            <div class="group_list">
+                    <label class="lab_group_list">用户组</label>
+                    <input type="text" id="ipt_group" class="ipt_group_info" value="{{group}}" name="group" autocomplete="off">
+            </div>
+            <div class="group_list">
+                <label class="lab_group_list">项目组</label>
+                <input list="project_info" class="ipt_group_info" name="project" autocomplete="off" {%ifnotequal group_id '0' %}value='{{project.id}}, {{project.dirname}}' readonly{% endifnotequal %}>
+                {% ifequal group_id '0' %}
+                <datalist id="project_info">
+                    {% for i in project_list %}
+                    <option value="{{i.project.id}}, {{i.project.dirname}}">
+                    {% endfor %}
+                </datalist>
+                {% endifequal %}
+                
+            </div>
+            <div class="group_list">
+                <label class="lab_group_list">权限类型</label>
+                <select class="group_select" tag="{{properm.id}}" autocomplete="off" name="perm" autocomplete="off">
+                    <option {% ifequal group_id '0' %}selected{% endifequal %}>请选择</option>
+                    {% ifequal properm.perm 'owner' %}
+                    <option selected>owner</option>
+                    {% else %}
+                    <option {% ifequal properm.perm 'view' %}selected{% endifequal %}>view</option>
+                    <option {% ifequal properm.perm 'edit' %}selected{% endifequal %}>edit</option>
+                    {% endifequal %}
+                </select>
+            </div>
+            <br>
+            <div class="blk_btn">
+                &emsp;&emsp;&emsp;&emsp;<button id="btn_update_perm">提交</button>
+                &emsp;&emsp;<button id="btn_return" type="reset">清除</button>
+            </div>
+            <br>
+        </div>  
+    </form>
+    <br>
+    <div class="group_details">
+        <p class="p_group_info">成员信息</p>
+        <table>
+            <tr>
+                <td><label class="lab_group_list">成员</label></td>
+                <td>
+                    <input list="browers" id="ipt_add_user">
+                        <datalist id="browers">
+                        {% for i in all_user %}
+                        {% ifnotequal i.username 'admin' %}
+                        <option value="{{i.username}}">
+                        {% endifnotequal %}
+                        {% endfor %}
+                        </datalist>    
+                    &emsp;<button id="add_group_member">添加</button>
+                    <div id="group_member_list">
+                    {% for i in user_list %}
+                    <span class="sp_group_user_list">{{i.user}}<button class="btn_del_group_user" id="{{i.id}}">x</button></span>
+                    {% endfor %}
+                    </div>
+                </td>
+                
+            </tr>
+        </table>
+        <br><br><br>
+        
+    </div>
+
+    <script>
+        //更改导航栏选项背景色
+        $("#li_doc").css("background-color","rgb(46, 50, 54)")
+        $("#li_doc a").css("color","white")
+
+        //用户组成员删除事件
+        var delete_group_bind = () =>{
+            $(".btn_del_group_user").click(function(){
+                var id = $(this).attr("id")
+                var option = 2                      //删除标志
+                url = "/ops/doc/update_group/?option="+option+"&group_id="+id
+                $.getJSON(url,function(status){
+                    if(status.code == 0){
+                        var label = '#'+id
+                        $(label).parent().remove()
+                    }
+                    else{
+                        alert(status.msg)
+                    }
+                })
+            })
+        }
+        delete_group_bind()
+ 
+        //用户组成员添加事件
+        $("#add_group_member").click(function(){
+            var op = $("#ipt_add_user").val()
+            var option = 1
+            var group_id = {{ group_id }} 
+            url = "/ops/doc/update_group/?group_id="+group_id+"&username="+op+"&option="+option
+            $.getJSON(url,function(status){
+                if(status.code == 0){
+                    alert(status.msg)
+                    $("#group_member_list").append("<span class='sp_group_user_list'>"+op+"<button class='btn_del_group_user' id='"+status.group_id+"'>x</button></span>")
+                    delete_group_bind()
+                }
+                else{
+                    alert(status.msg)
+                }
+            })
+        })
+
+        var initial_data = $("#doc_group_info").serializeArray();
+
+        //取消form表单自动提交
+        $("#doc_group_info").submit(function(){
+            return false
+        })
+        //按钮提交事件
+        $("#btn_update_perm").click(function(){
+            var submit_data = $("#doc_group_info").serializeArray()
+            if (submit_data == undefined){
+                alert("未填写数据")
+            }
+            if (JSON.stringify(initial_data) == JSON.stringify(submit_data)){
+                alert("数据未更新，无需提交")
+            }
+            if (submit_data != undefined && JSON.stringify(submit_data) != JSON.stringify(initial_data)){
+                var update_data = {'csrfmiddlewaretoken':'{{csrf_token}}', 'group_id':'{{group_id}}', 'perm_id':'{{perm_id}}'}
+                $.each(submit_data,function(index){
+                    if (submit_data[index]['value'] != initial_data[index]['value']){
+                        update_data[submit_data[index]['name']] = submit_data[index]['value']
+                    }
+                })
+                $.ajax({
+                    url: '/ops/doc/update_perm/',
+                    type:'post',
+                    data:update_data,
+                    success:function(submit){
+                        if (submit.code == 0){
+                            alert(submit.msg)
+                            window.location.href = "/ops/doc/add_or_edit_group/"+submit.id+"/"
+                        }
+                        else{
+                            alert(submit.msg)
+                        }
+                    }
+                })
+            }       
+        })
+    </script>
+{% endblock %}
+
+

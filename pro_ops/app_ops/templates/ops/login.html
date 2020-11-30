@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>运维管理平台</title>
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+    </head>
+    <body>
+        <div class="blk_content_01">          
+            <h3>运维管理平台</h3>
+            
+                <table>
+                    <tr>
+                        <td class="td_key"><span>用户名：</span></td>
+                        <td><input type="text" class="name" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <td class="td_key"><span>密码：</span></td>
+                        <td><input type="password" class="password" autocomplete="off"></td>
+                    </tr>             
+                </table>
+                <button style="margin-right: 30px;" name="login" class="login">登录</button>
+                <button type="reset">重置</button>          
+        </div>
+
+        <script>
+            $("input").focus(function(){
+                $("p").html(''); 
+            })
+
+            $(document).keyup(function(event){
+                if(event.keyCode ==13){
+                    $("button.login").trigger("click");
+                }
+            })
+
+            $("button.login").click(function(){
+                // $("p.user_remark").html('')
+                var user_name = $("input.name").val()
+                var user_password = $("input.password").val()
+                if (user_name == '')
+                {
+                    alert("用户名不能为空！");
+                }
+                else
+                {
+                    if (user_password == '')
+                    {
+                        alert("用户密码不能为空！");
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type:"POST",
+                            url: "/ops/login/",
+                            traditional:true,
+                            data:{user_name: user_name,user_password: user_password,csrfmiddlewaretoken: '{{ csrf_token }}'},
+                            success:function(login){
+                                if (login.code == 200)
+                                {
+                                    user_name = login.fullname
+                                    window.location.href = "/ops/main/"
+                                }
+                                else
+                                {
+                                    tips = login.tips
+                                    alert(tips)
+                                }
+                            }
+                        })
+                    }
+                }
+
+            })
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </body>
+</html>

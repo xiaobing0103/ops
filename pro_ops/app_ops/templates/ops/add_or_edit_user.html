@@ -1,0 +1,136 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/add_user.css">
+
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">用户配置</h5>
+    <div id="container">
+        <br>
+        <br>
+        <div class="blk_edit_pd">
+            <p class="p_edit_pd">{% if username %}修改密码{% else %}创建用户{% endif %}</p>
+            <form id="user01">
+                <p class="p_edit_pd_sum">
+                    {% if username %}
+                    <span>当前用户：</span>
+                    &emsp;<input type="text" style="border: none;" value="{{username}}" id="username" autocomplete="off">
+                    {% else %}
+                    &emsp;<span>用户名：</span><input type="text" class="ipt_edit_pd" name="username" id="username" autocomplete="off">
+                    {% endif %}
+                </p>
+                {% if username %}
+                <p class="p_edit_pd_sum">
+                    &emsp;<span>旧密码：</span><input class="ipt_edit_pd" type="password" name="old_password" id="old_password" autocomplete="off">
+                </p>
+                {% else %}
+                <p class="p_edit_pd_sum">
+                    &emsp;&emsp;<span>全称：</span><input class="ipt_edit_pd" type="text" name="first_name" id="first_name" autocomplete="off">
+                </p>
+                {% endif %}
+                <p class="p_edit_pd_sum">
+                    &emsp;<span>新密码：</span><input type="password" class="ipt_edit_pd" name="new_password" id="new_password" autocomplete="off">
+                </p>
+                <p class="p_edit_pd_sum">
+                    <span>重复密码：</span><input type="password" class="ipt_edit_pd" name="re_password" id="re_password" autocomplete="off">
+                </p>
+                <button type="button" class="btn_edit_user" id="btn_edit_pd">确认</button>
+                &emsp;&emsp;<button type="reset">清除</button>
+            </form>
+        </div>
+        <br><br>
+        {% if perms.change_permission %}
+        <div class="blk_edit_pd">
+            <p class="p_edit_pd">权限管理</p>
+            <div id="user02">
+                <ul class="ul_edit_perms">
+                    {% for key,value in info.items %}
+                    <li>
+                        <a href="#" class="ul_perms_title">{{ value.0 }}</a>
+                        <ul class="ul_edit_perms_mod">
+                            <li>
+                                <input type="checkbox" autocomplete="off"  name="view_{{key}}" class="check_box_perms" {% if 'view' in value %}checked{% endif %}>
+                                <label>查看</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" autocomplete="off" name="add_{{key}}" class="check_box_perms" {% if 'add' in value %}checked{% endif %}>
+                                <label>新增</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" autocomplete="off" name="change_{{key}}" class="check_box_perms" {% if 'change' in value %}checked{% endif %}>
+                                <label>修改</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" autocomplete="off" name="delete_{{key}}" class="check_box_perms" {% if 'delete' in value %}checked{% endif %}>
+                                <label>删除</label>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        </div>
+        {% endif %}   
+    </div>
+    <script>
+        $("input").blur(function(){
+                $(this).attr("value",$(this).val());
+        })
+
+        $("#btn_edit_pd").click(function(){
+            id = "{{id}}"
+            username = $("#username").val()
+            first_name = $("#first_name").val()
+            old_password = $("#old_password").val()
+            new_password = $("#new_password").val()
+            re_password = $("#re_password").val() 
+            if(new_password == re_password){
+                url='/ops/change_pd_or_perm/'+id+'/?username='+username+'&new_password='+new_password+'&old_password='+old_password+'&first_name='+first_name
+                $.getJSON(url,function(status){
+                    alert(status.tips)
+                    window.location.href = "/ops/user_detail/"+status.id
+                })
+            }
+            else{
+                alert('两次输入的密码不匹配')
+            }
+
+
+        })
+
+        $("#li_user_manager").css("background-color","rgb(46, 50, 54)")
+        $("#li_user_manager a").css("color","white")
+
+        $(".ul_perms_title").click(function(){
+            var statu = $(this).parent().children("ul").css("display")
+            if (statu == "none"){
+                $(this).parent().children("ul").css("display","block")
+            }
+            else{
+                $(this).parent().children("ul").css("display","none")
+            }
+        })
+
+      
+            $(".check_box_perms").click(function(){
+                var statu = $(this).prop("checked")
+                var perm = $(this).attr("name")
+                var id = "{{id}}"
+                let flag=null;
+                if (statu){
+                    flag='add_perm';
+                }else{
+                    flag="delete_perm"
+                }
+                url='/ops/change_pd_or_perm/'+id+'/?perm='+perm+'&flag='+flag;
+                $.getJSON(url,function(status){
+                    return true
+            })
+
+            })
+    </script>
+{% endblock %}
+
+

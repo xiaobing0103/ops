@@ -1,0 +1,47 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<script type="text/javascript" src="//unpkg.com/wangeditor/dist/wangEditor.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h5 id="h5_id">新增文档</h5>
+<div id="container">
+    <div id="doc_editor"></div>
+        <br>
+        <div class="btn_set_add">
+            &emsp;&emsp;<button id="add_doc_btn_save">保存</button>
+            &emsp;&emsp;<button id="add_doc_btn_return">返回</button>
+        </div>
+</div>
+
+<script>
+    var doc_id = '{{doc_id}}'
+    const E = window.wangEditor
+    const editor = new E('#doc_editor')
+    editor.config.height = 700
+    editor.create()
+    editor.txt.html('{{doc_content|safe}}')
+    $("#add_doc_btn_save").click(function(){
+        doc_content = editor.txt.html()
+        $.ajax({
+            type:"POST",
+            url: "/ops/doc/add_or_edit/"+doc_id,
+            traditional:true,
+            data:{id: doc_id, content: doc_content,  csrfmiddlewaretoken: '{{ csrf_token }}',},
+            success:function(submit){
+                if (submit.code == 0){
+                    alert('保存成功')
+                }else{
+                    alert('保存失败')
+                }
+            }
+        })
+    })
+    $("#add_doc_btn_return").click(function(){
+        url = '/ops/doc/'
+        window.location.href = url
+    })
+</script>
+{% endblock %}
+
+

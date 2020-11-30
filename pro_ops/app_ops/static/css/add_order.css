@@ -1,0 +1,57 @@
+div.bk_query{
+    text-align: center;
+    margin-top: 20px;
+}
+
+input{
+    width: 666px;
+    height: 25px;
+    border-radius: 3px;
+    border:1px solid black;
+}
+
+button.btn_add_order{
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 6px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    cursor: pointer; 
+    border-radius: 2px;   
+}
+
+#btn_create{
+    margin-top: 20px;
+}
+
+h5{
+    margin-bottom: 5px;
+}
+
+#container{
+    margin: 0 3%;
+}
+
+p{
+    font-size: 9pt;
+}
+
+.blk_add_content{
+    margin-bottom: 25px;
+}
+
+select{
+    width: 150px;
+    height: 25px;
+    font-size: 9pt;
+}
+
+textarea{
+    font-size: 9pt;
+    font-family: "微软雅黑";
+    color: rgba(33, 34, 34, 0.767);
+    border-radius: 3px;
+    border:1px solid black;
+}

@@ -1,0 +1,39 @@
+#bk_container{
+    position: absolute;
+    left: 5%;
+    width: 90%;
+}
+
+#ipt_title{  
+    width: 100%;
+    height: 25px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid gray;
+    font-size: 10pt;
+    font-weight: 500;
+}
+
+#btn_submit{
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer; 
+    border-radius: 2px;   
+}
+
+.btn_editor_doc{
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer; 
+    border-radius: 2px;
+}

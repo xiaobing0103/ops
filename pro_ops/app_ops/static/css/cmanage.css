@@ -1,0 +1,183 @@
+div.bk_query{
+    text-align: center;
+    margin-top: 20px;
+}
+
+input.ip_query{
+    width: 350px;
+    height: 20px;
+}
+
+button.btn_cmanage{
+    background-color: rgb(198, 204, 209);
+    border: none;
+    padding: 6px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 11px;
+    cursor: pointer; 
+    border-radius: 2px;   
+}
+
+#btn_create{
+    margin-top: 20px;
+}
+
+h5{
+    margin-bottom: 5px;
+}
+
+#bk_content{
+    margin: 0 2%;
+}
+
+#blk_cm_query{
+    margin-bottom: 20px;
+    margin-left: 3%;
+}
+
+table.tb_order{
+    border-collapse: collapse;
+    border:1px solid black;
+    text-align:center;
+    width: 100%;
+}
+table.tb_order td{
+    font-size:8pt;
+    border:1px solid black;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+table.tb_order th{
+    border:1px solid black;
+    font-size: 9pt;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:rgb(152, 157, 165);
+
+}
+
+.blk_order_details{
+    display: none;
+    position: absolute;
+    top: 12%;  left: 25%;
+    width: 50%;
+    height: 80%;
+    padding: 16px;
+    border: 1px ;
+    border-radius: 5px;
+    background-color: white;
+    opacity: 1;
+    z-index:1002;
+    overflow: auto;
+}
+
+.blk_order_editor{
+    display: none;
+    position: absolute;
+    top: 12%;  left: 25%;
+    width: 50%;
+    height: 80%;
+    padding: 16px;
+    border: 1px ;
+    border-radius: 5px;
+    background-color: white;
+    opacity: 1;
+    z-index:1001;
+    overflow: auto;
+    font-size: 10pt;
+}
+
+.blk_order_confirm{
+    display: none;
+    position: absolute;
+    top: 12%;  left: 25%;
+    width: 50%;
+    height: 80%;
+    padding: 16px;
+    border: 1px ;
+    border-radius: 5px;
+    background-color: white;
+    opacity: 1;
+    z-index:1001;
+    overflow: auto;
+    font-size: 10pt;
+}
+
+.blk_details_bg{
+    display: none;
+    position: fixed;
+    top: 0;  left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index:1003;
+    overflow: auto;
+}
+
+.blk_details_btn{
+    text-align: center;
+}
+
+.p_order_ml{
+    font-weight: 600;
+}
+
+table.tb_details{
+    border-collapse:separate;
+    border-spacing:30px 20px;
+    font-size: 10pt;
+}
+
+table.tb_details td{
+    vertical-align: top;
+}
+
+.p_order_details{
+    color:  rgb(44, 41, 41);
+}
+
+.ipt_editor{
+    width: 666px;
+    height: 25px;
+    border-radius: 3px;
+    border-width: 1px;
+}
+
+.ta_editor{
+    border-radius: 3px;
+    border-width: 1px;
+}
+
+select{
+    width: 150px;
+    height: 25px;
+    font-size: 9pt;
+    color:  rgba(33, 34, 34, 0.767);;
+}
+
+textarea{
+    color: rgba(33, 34, 34, 0.767);
+    font-size: 9pt;
+    font-family: "微软雅黑";
+}
+
+.blk_add_content p {
+    font-weight: 600;
+}
+
+.ipt_query_order{
+    width: 110px;
+    height: 18px;
+    border-radius: 2px;
+    border-width: 1px;
+}
+
+.sp_text{
+    font-family: "微软雅黑";
+    font-size: 10pt;
+}

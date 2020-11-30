@@ -1,0 +1,458 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/cmanage.css">
+{% endblock %}
+     
+{% block content %}
+<h5 id="h5_id">工单列表</h5>
+    <div id="container">
+        <div id="blk_cm_query">
+            <br>
+            <form action="" method="GET">
+                <span class="sp_text">日期：&ensp;&ensp;</span>
+                <input type="date" class="ipt_query_order" id="ipt_id_query_str" name="ipt_str" value="{{start_date}}">
+                <span>&ensp;至&ensp;</span>
+                <input type="date" class="ipt_query_order" id="ipt_id_query_end" name="ipt_end" value="{{end_date}}">
+                <span><button class="btn_cmanage" id="btn_id_query" name="btn_query" value="query">查询</button></span>
+                &emsp;&emsp;
+                <span><button class="btn_cmanage" id="btn_id_pre" name="btn_query" value="pre">上一页</button></span>
+                &ensp;
+                <span><button class="btn_cmanage" id="btn_id_next" name="btn_query" value="next">下一页</button></span>
+            </form>
+            {% if perms.app_ops.add_cmanage %}
+            <a href="/ops/cmanage/add_order/"><button class="btn_cmanage" id="btn_create">创建工单</button></a>
+            {% endif %}
+        </div>
+
+        <div id="bk_content">
+           <table class="tb_order">
+               <tr>
+                   <th style="width: 25%;">标题</th>
+                   <th style="width: 13%;">变更窗口</th>
+                   <th style="width: 3%;">状态</th>
+                   <th style="width: 4%;">审核人</th>
+                   <th style="width: 4%;">申请人</th>
+                   <th style="width: 8%;" data-="">创建日期</th>
+                   <th style="display: none;">工单内容</th>
+                   <th style="display: none;">影响</th>
+                   <th style="display: none;">回滚</th>
+                   <th style="width: 7%;">操作</th>
+                   <th style="display: none;">创建时间</th>
+               </tr>
+               {% for order in info %}
+               <tr>
+                   <td>{{ order.title }}</td>
+                   <td>{{ order.witime }}</td>
+                   <td>
+                       <span
+                        {% if order.statu == '未通过' %} style="background-color: red; color: white; border-radius: 2px;"{% endif %}
+                        {% if order.statu == '已完成' %} style="background-color: green; color: white; border-radius: 2px;"{% endif %}
+                        {% if order.statu == '待执行' %} style="background-color: blue; color: white; border-radius: 2px;"{% endif %}
+                        {% if order.statu == '审核中' %} style="background-color: rgb(7, 132, 250); color: white; border-radius: 2px;"{% endif %}
+                       >
+                        {{ order.statu }}</span> 
+                    </td>
+                   <td>{{ order.reviewer }}</td>
+                   <td>{{ order.author }}</td>
+                   <td>{{ order.cdate|date:'Y-m-d' }}</td>
+                   <td style="display: none;">{{ order.content }}</td>
+                   <td style="display: none;">{{ order.effect }}</td>
+                   <td style="display: none;">{{ order.rollback }}</td>
+                   <td>
+                        {% if order.author == fullname and order.statu == '未通过' %}  
+                        <a href="#" tag="{{order.id}}" class="ahref_details_editor">编辑</a>&ensp;
+                        <a href="#" tag="{{order.id}}" class="ahref_details_delete">删除</a>&ensp;
+                        {% endif %}
+                        {%if order.reviewer == fullname and order.statu == '审核中' %}
+                        <a href="#" tag="{{order.id}}" class="ahref_details_reviewer">审核</a>&ensp;
+                        {% endif %}
+                        {%if order.author == fullname and order.statu == '待执行' %}
+                        <a href="#" tag="{{order.id}}" class="ahref_details_close">确认</a>&ensp;
+                        {% endif %}
+                        <a href="#" tag="{{order.id}}" class="ahref_details_all">详情</a>
+                    </td>
+                    <td style="display: none;">{{ order.ctime }}</td>
+               </tr>
+               {% endfor %}
+           </table>
+           <p style="font-size: 9pt;">共 {{orders_count}} 条</p>
+        </div>
+        <div class="blk_details_bg">
+            <div class="blk_order_details">
+                <table class="tb_details">
+                    <tr>
+                        <td><span class="p_order_ml">工单标题：</span></td>
+                        <td><span id="p_order_title" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更步骤：</span></td>
+                        <td><span id="p_order_content" class="p_order_details" style="white-space:pre-wrap"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更窗口：</span></td>
+                        <td><span id="p_order_witime" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更影响：</span></td>
+                        <td><span id="p_order_effect" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">回滚操作：</span></td>
+                        <td><span id="p_order_rollback" class="p_order_details"></span></td>
+                    </tr>
+                    <tr id="tr_order_statu">
+                        <td><span class="p_order_ml">工单状态：</span></td>
+                        <td><span id="p_order_statu" class="p_order_details"></span></td>
+                    </tr>
+                    <tr id="tr_order_statu">
+                        <td><span class="p_order_ml">创建时间：</span></td>
+                        <td><span id="p_order_ctime" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml" id="sp_order_reviewer_01">变更审核：</span></td>
+                        <td>
+                            <span id="st_reviewer_statu" class="p_order_details"> 
+                                <select name="reviewer" id="select_reviewer">
+                                    <option value="" disabled selected>请选择</option>
+                                    <option>通过</option>
+                                    <option>退回</option>
+                                </select>
+                            </span>
+                            <span id="sp_order_id" style="display: none;"></span>
+                        </td>
+                    </tr>
+                </table>                  
+                
+                <div class="blk_details_btn">
+                    <span><button class="btn_cmanage" id="btn_reviewer_submit">确认</button><button class="btn_cmanage" id="btn_close" style="margin-left: 30px;">关闭</button></span>
+                </div>
+            </div>
+
+            <div class="blk_order_confirm">
+                <table class="tb_details">
+                    <tr>
+                        <td><span class="p_order_ml">工单标题：</span></td>
+                        <td>
+                            <span id="sp_order_title" class="p_order_details"></span>
+                            <input type="text" class="ipt_editor" id="ipt_confirm_order_id" style="display: none;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更步骤：</span></td>
+                        <td><span id="sp_order_content" class="p_order_details" style="white-space:pre-wrap"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更窗口：</span></td>
+                        <td><span id="sp_order_witime" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">变更影响：</span></td>
+                        <td><span id="sp_order_effect" class="p_order_details"></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="p_order_ml">回滚操作：</span></td>
+                        <td><span id="sp_order_rollback" class="p_order_details"></span></td>
+                    </tr>
+                    <tr class="tr_order_statu">
+                        <td><span class="p_order_ml">工单状态：</span></td>
+                        <td><span id="sp_order_statu" class="p_order_details"></span></td>
+                    </tr>
+                    <tr id="tr_order_statu">
+                        <td><span class="p_order_ml">创建时间：</span></td>
+                        <td><span id="sp_order_ctime" class="p_order_details"></span></td>
+                    </tr>
+                    <tr class="tr_order_hidden">
+                        <td><span class="p_order_ml">处理结果：</span></td>
+                        <td><textarea name="" id="ipt_id_order_results" class="p_order_details" cols="70" rows="3"></textarea></td>
+                    </tr>
+                </table>                  
+                
+                <div class="blk_details_btn">
+                    <span><button class="btn_cmanage" id="btn_confirm_submit">确认</button><button class="btn_cmanage" id="btn_confirm_close" style="margin-left: 30px;">关闭</button></span>
+                </div>
+            </div>
+
+            <div class="blk_order_editor">
+                <div class="blk_add_content">
+                    <p>工单标题：</p>
+                    <input type="text" class="ipt_editor" id="ipt_editor_order_id" style="display: none;">
+                    <input type="text" class="ipt_editor" id="ipt_editor_order_title">
+                </div>
+                <div class="blk_add_content">
+                    <p>变更内容：</p>
+                    <textarea name="" id="ta_add_order_content" class="ta_editor" cols="110" rows="5"></textarea>
+                </div>
+                <div class="blk_add_content">
+                    <p>变更窗口：</p>
+                    <input type="text" class="ipt_editor" id="ipt_add_order_cwt">
+                </div>
+                <div class="blk_add_content">
+                    <p>变更影响：</p>
+                    <textarea name="" id="ta_add_order_effect" class="ta_editor" cols="110" rows="3"></textarea>
+                </div>
+                <div class="blk_add_content">
+                    <p>回滚操作：</p>
+                    <textarea name="" id="ta_add_order_rollback" class="ta_editor" cols="110" rows="3"></textarea>
+                </div>
+                <div class="blk_add_content">
+                    <p>审核人：</p>
+                    <select name="" id="st_add_order">
+                        <option value="" disabled selected>请选择</option>
+                        {% for user in users %}
+                        <option value="{{ user }}">{{ user }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="blk_details_btn">
+                    <button class="btn_cmanage" id="btn_editor_submit">确认</button><button class="btn_cmanage" id="btn_editor_close" style="margin-left: 30px;">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $("#li_cmanage").css("background-color","rgb(46, 50, 54)")
+            $("#li_cmanage a").css("color","white")
+
+            $("a.ahref_details_all").click(function(){
+                var id = $(this).attr("tag")
+                var title = $(this).parents("tr").children().eq(0).html()
+                var content = $(this).parents("tr").children().eq(6).html()
+                var witime = $(this).parents("tr").children().eq(1).html()
+                var effect = $(this).parents("tr").children().eq(7).html()
+                var rollback = $(this).parents("tr").children().eq(8).html()
+                var statu = $(this).parents("tr").children().eq(2).children("span").html()
+                var ctime = $(this).parents("tr").children().eq(10).html()
+                var cdate = $(this).parents("tr").children().eq(5).html()
+                $(".blk_details_bg").css("display","block")
+                $(".blk_order_details").css("display","block")
+                $("#btn_reviewer_submit").css("display","none")
+                $("#sp_order_reviewer_01").css("display","none")
+                $("#st_reviewer_statu").css("display","none")
+                $("#p_order_title").text(title)
+                $("#p_order_content").text(content)
+                $("#p_order_witime").text(witime)
+                $("#p_order_effect").text(effect)
+                $("#p_order_rollback").text(rollback)
+                $("#p_order_statu").text(statu)
+                $("#p_order_ctime").text(cdate+' '+ctime)
+            })
+
+            $("a.ahref_details_close").click(function(){
+                var id = $(this).attr("tag")
+                var title = $(this).parents("tr").children().eq(0).html()
+                var content = $(this).parents("tr").children().eq(6).html()
+                var witime = $(this).parents("tr").children().eq(1).html()
+                var effect = $(this).parents("tr").children().eq(7).html()
+                var rollback = $(this).parents("tr").children().eq(8).html()
+                var statu = $(this).parents("tr").children().eq(2).children("span").html()
+                var ctime = $(this).parents("tr").children().eq(10).html()
+                var cdate = $(this).parents("tr").children().eq(5).html()
+                $(".blk_details_bg").css("display","block")
+                $(".blk_order_confirm").css("display","block")
+                $("#ipt_editor_order_id").val(id)
+                $("#sp_order_title").text(title)
+                $("#sp_order_content").text(content)
+                $("#sp_order_witime").text(witime)
+                $("#sp_order_effect").text(effect)
+                $("#sp_order_rollback").text(rollback)
+                $("#sp_order_statu").text(statu)
+                $("#sp_order_ctime").text(cdate+' '+ctime)
+            })
+
+            $("a.ahref_details_reviewer").click(function(){
+                var id = $(this).attr("tag")
+                var title = $(this).parents("tr").children().eq(0).html()
+                var content = $(this).parents("tr").children().eq(6).html()
+                var witime = $(this).parents("tr").children().eq(1).html()
+                var effect = $(this).parents("tr").children().eq(7).html()
+                var rollback = $(this).parents("tr").children().eq(8).html()
+                $(".blk_details_bg").css("display","block")
+                $(".blk_order_details").css("display","block")
+                $("#tr_order_statu").css("display","none")
+                $("#sp_order_id").val(id)
+                $("#p_order_title").text(title)
+                $("#p_order_content").text(content)
+                $("#p_order_witime").text(witime)
+                $("#p_order_effect").text(effect)
+                $("#p_order_rollback").text(rollback)
+            })
+
+            $("a.ahref_details_editor").click(function(){
+                var id = $(this).attr("tag")
+                var title = $(this).parents("tr").children().eq(0).html()
+                var witime = $(this).parents("tr").children().eq(1).html()
+                var content = $(this).parents("tr").children().eq(6).html()
+                var effect = $(this).parents("tr").children().eq(7).html()
+                var rollback = $(this).parents("tr").children().eq(8).html()
+                var reviewer = $(this).parents("tr").children().eq(3).html()
+                $(".blk_details_bg").css("display","block")
+                $(".blk_order_editor").css("display","block")
+                $(".ipt_editor").val("")
+                $(".ta_editor").val("")
+                $("#ipt_editor_order_id").val(id)
+                $("#ipt_editor_order_title").val(title)
+                $("#ta_add_order_content").val(content)
+                $("#ipt_add_order_cwt").val(witime)
+                $("#ta_add_order_effect").val(effect)
+                $("#ta_add_order_rollback").val(rollback)
+                $("#st_add_order").val(reviewer)
+            })
+
+            $("input").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+            $("textarea").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+            $("select").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+
+            $("#btn_confirm_submit").click(function(){
+                var id = $("#ipt_editor_order_id").val()
+                var mod = "Cmanage"
+                var confirm = $("#ipt_id_order_results").val()
+                var statu = "已完成"
+                $.ajax({
+                            type:"POST",
+                            url: "/ops/dml/",
+                            traditional:true,
+                            data:{
+                                id: id,
+                                mod: mod,
+                                statu: statu,
+                                confirm: confirm,
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                            },
+                            success:function(submit){
+                                if (submit.code == 200)
+                                {
+                                    alert(submit.msg)
+                                    window.location.href = "/ops/cmanage/"
+                                }
+                                else
+                                {
+                                    alert(submit.msg)
+                                }
+                            }
+                })             
+            })
+
+            $("#btn_reviewer_submit").click(function(){
+                var id = $("#sp_order_id").val()
+                var mod = "Cmanage"
+                var result = $("#select_reviewer").val()
+                
+                if(result == "通过"){
+                statu = "待执行"
+                }
+                else if(result == null){
+                    alert("填写错误，请重新选择")
+                }
+                else{
+                    statu = "未通过"
+                }
+                $.ajax({
+                            type:"POST",
+                            url: "/ops/dml/",
+                            traditional:true,
+                            data:{
+                                id: id,
+                                mod: mod,
+                                statu: statu,
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                            },
+                            success:function(submit){
+                                if (submit.code == 200)
+                                {
+                                    alert(submit.msg)
+                                    window.location.href = "/ops/cmanage/"
+                                }
+                                else
+                                {
+                                    alert(submit.msg)
+                                }
+                            }
+                })             
+            })
+
+            $("#btn_editor_submit").click(function(){
+                var id = $("#ipt_editor_order_id").val()
+                var title = $("#ipt_editor_order_title").val()
+                var content = $("#ta_add_order_content").val()
+                var witime = $("#ipt_add_order_cwt").val()
+                var effect = $("#ta_add_order_effect").val()
+                var rollback = $("#ta_add_order_rollback").val()
+                var reviewer = $("#st_add_order").val()
+                var mod = "Cmanage"
+                var statu = "审核中"
+                $.ajax({
+                            type:"POST",
+                            url: "/ops/dml/",
+                            traditional:true,
+                            data:{
+                                id: id,
+                                mod: mod,
+                                title: title,
+                                content: content,
+                                witime: witime,
+                                effect: effect,
+                                rollback: rollback,
+                                reviewer: reviewer,
+                                statu: statu,
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                            },
+                            success:function(submit){
+                                if (submit.code == 200)
+                                {
+                                    alert(submit.msg)
+                                    window.location.href = "/ops/cmanage/"
+                                }
+                                else
+                                {
+                                    alert(submit.msg)
+                                }
+                            }
+                })
+            })
+
+            $("#btn_close").click(function(){
+                $("#sp_order_reviewer_01").css("display","block")
+                $("#st_reviewer_statu").css("display","block")
+                $("#btn_reviewer_submit").css("display","inline-block")
+                $(".blk_details_bg").css("display","none")
+                $(".blk_order_details").css("display","none")
+
+            })
+
+            $("#btn_confirm_close").click(function(){
+                $(".blk_details_bg").css("display","none")
+                $(".blk_order_confirm").css("display","none")
+
+            })
+
+            $("#btn_editor_close").click(function(){
+                $("#tr_reviewer_statu").css("display","block")
+                $(".blk_details_bg").css("display","none")
+                $(".blk_order_editor").css("display","none")
+            })
+
+            $(".ahref_details_delete").click(function(){
+                var id = $(this).attr("tag")
+                var para = id+'&mod=Cmanage'
+                url = "/ops/dml/?id="+para
+                $.getJSON(url,function(status){
+                    if(status.code == 0){
+                        alert("删除成功")
+                        window.location.href = "/ops/cmanage/"
+                    }
+                    else{
+                        alert("操作失败")
+                    }
+                })
+            })
+        </script>
+    </div>
+{% endblock %}
+
+

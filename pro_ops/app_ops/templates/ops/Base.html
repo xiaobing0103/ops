@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>运维管理平台</title>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    {% block style %}
+    {% endblock %}
+</head>
+
+<body>
+    <div>
+        <ul class="list">
+            <!-- <li><img src="/static/img/home.png" alt=""></li> -->
+            <li id="li_main"><a href="/ops/main/">主页</a></li>
+            {% if perms.app_ops.view_server %}
+            <li id="li_server"><a href="/ops/server/">服务器</a></li>
+            {% endif %}
+            {% if perms.app_ops.view_os %}
+            <li id="li_os"><a href="/ops/os/">操作系统</a></li>
+            {% endif %}
+            {% if perms.app_ops.view_cmanage %}
+            <li id="li_cmanage"><a href="/ops/cmanage/">变更管理</a></li>
+            {% endif %}
+            {% if perms.app_ops.view_doc %}
+            <li id="li_doc"><a href="/ops/doc/">文档中心</a></li>
+            {% endif %}
+            {% if perms.view_user %}
+            <li id="li_user_manager"><a href="/ops/user_manager">用户管理</a></li>
+            {% endif %}
+            <li id="li_user" style="float: right;" class="dropdown"><a href="#">你好，{{user.first_name}}</a>  
+                <div class="dropdown-content" style="position: absolute;">
+                    <a href="/ops/user_detail/{{user_id}}/" style="padding: 6px 8px;" >修改密码</a>
+                    <a href="/ops/logout/" style="padding: 6px 8px;">注销</a>
+                </div>
+            </li>
+        </ul>
+        
+    </div>
+
+    
+    <!-- <div id="blk_hidden"><p id="p_hidden"><img src="/static/img/left.png" alt=""></p></div> -->
+    <div class="bk_base">      
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- <script>
+        $("#blk_hidden").click(function(){
+            var statu = $(".list").css("display")
+            if (statu == "none"){
+                $(".list").css("display","block")
+                $("#blk_hidden").css("left","200px")
+                $(".bk_base").css("left","210px")
+            }
+            else{
+                $(".list").css("display","none")
+                $("#blk_hidden").css("left","0")
+                $(".bk_base").css("left","10px")
+            }
+        })
+    </script> -->
+</body>
+</html>

@@ -1,0 +1,53 @@
+.blk_edit_pd{
+    margin-left: 3%;
+    width: 80%;
+    font-size: 9pt;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(228, 233, 240);
+    border-radius: 2px;
+}
+
+.p_edit_pd{
+    padding: 8px 5px;
+    margin-top: 1px;
+    font-weight: 500;
+    background-color: rgb(228, 233, 240);
+}
+
+.p_edit_pd_sum{
+    margin: 10px 5px;
+}
+
+input.ipt_edit_pd{
+    margin-left: 10px;
+    width: 150px;
+}
+
+ul.ul_edit_perms{
+    margin: 10px 0px;
+}
+
+ul.ul_edit_perms_mod{
+    display: none;
+    padding: 0;
+}
+
+ul.ul_edit_perms_mod li{
+    list-style: none;
+}
+
+.check_box_perms{
+    vertical-align:middle;
+    margin: 3px 15px;
+}
+
+label{
+    vertical-align:middle;
+}
+
+.btn_edit_user{
+    margin-left: 80px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

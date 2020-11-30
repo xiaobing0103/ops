@@ -1,0 +1,237 @@
+{% extends "ops/Base.html" %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="/static/css/server.css">
+{% endblock %}
+
+{% block content %}     
+<h5 id="h5_id">服务器列表</h5>
+     
+    <form action="", method="GET"> 
+        <table class="a">
+                <tr>
+                    <td>产品编号：</td> 
+                    <td style="width:200px"><input type="text" name="productid" class="ipt_server_query" value="{{productid}}" autocomplete="off"></td> 
+                    <td>设备品牌：</td> 
+                    <td style="width:200px"><input type="text" name="brand" class="ipt_server_query" value="{{brand}}" autocomplete="off"></td>
+                    <td>设备名称：</td> 
+                    <td><input type="text" name="servername" class="ipt_server_query" value="{{servername}}" autocomplete="off"></td>
+                <tr>
+                    <td>设备型号：</td> 
+                    <td><input type="text" name="model" class="ipt_server_query" value="{{model}}" autocomplete="off"></td>
+                    <td>设备功能：</td> 
+                    <td><input type="text" name="function" class="ipt_server_query" value="{{function}}" autocomplete="off"></td>
+                    <td>数据中心：</td> 
+                    <td><input type="text" name="data_center" class="ipt_server_query" value="{{data_center}}" autocomplete="off"></td>   
+                </tr>
+        </table>
+        <br>
+        <div class="blk_btn_set">
+            {% if perms.app_ops.add_server %}
+            <a style="text-decoration: none;" href="/ops/server/add_or_edit_server/"><button type="button">新增</button></a>
+            {% endif %}
+            {% if perms.app_ops.change_server %}
+            <button id="alter_server" type="button">更改</button>
+            {% endif %}
+            {% if perms.app_ops.delete_server %}
+            <button type="button" class="delete" id="server_btn_del">删除</button>
+            {% endif %}
+            <button style="margin-left: 20px;" name="btn_submit" type="submit" value="select">查询</button>
+            <button name="btn_submit" type="submit" value="pre">上一页</button>
+            <button name="btn_submit" type="submit" value="next">下一页</button>
+            <button name="btn_submit" type="submit" value="st_number">跳至</button>
+            <input style="width: 80px; height: 15px;" type="number" name="page_number">
+            <span style="font-size: 9pt;">{{page_number}} / {{number}}</span>
+            &ensp;&ensp;<span style="font-size: 9pt;">共 {{count}} 条</span>
+            {% if perms.app_ops.add_server %}
+            &emsp;&emsp;&emsp;&emsp;<a href="/ops/server/export/"><button type="button">全部导出</button></a>
+            {% endif %}
+        </div>  
+    </form>
+    <br>
+    <div style="width: 97%; overflow-x: auto;white-space: nowrap;">
+        <table class="tb" id="tb_server">
+            <tr>
+                <th><input type="checkbox" id="all_box"></th>
+                <th>序号</th>
+                <th>产品编号</th>
+                <th>品牌</th>
+                <th>设备名称</th>
+                <th>设备型号</th>
+                <th>状态</th>
+                <th>CPU型号</th>
+                <th>CPU颗数</th>
+                <th>单颗核心</th>
+                <th>内存数量</th>
+                <th>内存总量(GB)</th>
+                <th>SSD数量</th>
+                <th>SSD总量(GB)</th>
+                <th>HDD数量</th>
+                <th>HDD总量(TB)</th>
+                <th>raid模式</th>
+                <th>IDRAC IP</th>
+                <th>购买日期</th>
+                <th>质保终止</th>
+                <th>设备功能</th>
+                <th>数据中心</th>
+                <th>网络接入</th>
+                <th>idrac网络接入</th>
+                <th>机柜位置</th>
+                <th>具体U位</th>
+            </tr>
+            {% for server in info %}
+            <tr>
+                <td class="td_box"><input type="checkbox" class="box" id="{{ forloop.counter}}" value="{{ server.id }}"></td>
+                <td class="data">{{ forloop.counter|add:strat }}</td>
+                <td class="data">{{ server.productid }}</td>
+                <td class="data">{{ server.brand }}</td>
+                <td class="data">{{ server.servername }}</td>
+                <td class="data">{{ server.model }}</td>
+                <td class="data">{{ server.status }}</td>
+                <td class="data">{{ server.cpu_model }}</td>
+                <td class="data">{{ server.cpu_quantity }}</td>
+                <td class="data">{{ server.cpu_core }}</td>
+                <td class="data">{{ server.memory_quantity }}</td>
+                <td class="data">{{ server.memory_total }}</td>
+                <td class="data">{{ server.ssd_quantity }}</td>
+                <td class="data">{{ server.ssd_total }}</td>
+                <td class="data">{{ server.hdd_quantity }}</td>
+                <td class="data">{{ server.hdd_total }}</td>
+                <td class="data">{{ server.raid_type }}</td>
+                <td class="data">{{ server.idrac_ip }}</td>
+                <td class="data">{{ server.purchase_date }}</td>
+                <td class="data">{{ server.warranty_end }}</td>
+                <td class="data">{{ server.function }}</td>
+                <td class="data">{{ server.data_center }}</td>
+                <td class="data">{{ server.network }}</td>
+                <td class="data">{{ server.idrac_network}}</td>
+                <td class="data">{{ server.rack }}</td>
+                <td class="data">{{ server.rack_u }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div> 
+    
+    <script>
+        $("#li_server").css("background-color","rgb(46, 50, 54)")
+        $("#li_server a").css("color","white")
+
+        //设置复选框全选和反选，以及涂色
+        $("#all_box").click(function(){
+            var x = $(this).prop("checked")
+            $(".box").prop("checked",x)
+            if(x == true){
+                $("table.tb td").css("background-color", "rgb(209, 215, 223)");
+            }
+            else{
+                $("table.tb td").css("background-color", "#FFFFFF");
+            }
+        })
+        
+        //判断是否满足全选
+        $(".box").click(function(){
+            var j = 0
+            var le = $(".box").length
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                if (status == true){
+                    j++;
+                }
+            })
+            if(j<le){
+                $("#all_box").prop("checked",false)
+            }
+            else{
+                $("#all_box").prop("checked",true)
+            }  
+        })
+
+        //删除事件
+        var delete_list = []
+        $("#server_btn_del").click(function(){
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                var id = $(this).val()
+                if (status == true){
+                    delete_list.push(id)
+                }
+            })
+            url = "/ops/dml/?delete_list="+delete_list.join(',')+'&mod=Server'
+            $.getJSON(url,function(status){
+                if(status.code == 0){
+                    alert("删除成功")
+                    window.location.href = "/ops/server/"
+                }
+                else{
+                    alert("操作失败")
+                }
+            })
+        })
+
+        //编辑事件
+        $("#alter_server").click(function(){
+            var j=0
+            var alter_id
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                var id = $(this).val()
+                if (status == true){
+                    j++;
+                    alter_id = id
+                }
+            })
+            if(j>1 || j==0){
+                alert("请仅选择一条数据进行更新！")
+            }
+            else{
+                var url = "/ops/server/add_or_edit_server/"+alter_id
+                window.location.href = url
+            }
+        })
+
+        //鼠标放置改变背景色
+        $(function () {
+            var tr = $("#tb_server tr");
+            tr.mouseover(function () {
+                $(this).css("background-color", "rgb(209, 215, 223)");
+                $(this).children("td").css("background-color", "rgb(209, 215, 223)");
+            }).mouseout(function () {
+                var box =$(this).children().eq(0).find("input").prop("checked")
+                if (box == true){
+                    $(this).css("background-color", "rgb(209, 215, 223)");
+                    $(this).children("td").css("background-color", "rgb(209, 215, 223)");
+                }
+                else{
+                    $(this).css("background-color", "#FFFFFF");
+                    $(this).children("td").css("background-color", "#FFFFFF");
+                }
+            });
+        });
+ 
+        //点击数据行，勾选
+        $(function () {
+            var td = $("#tb_server td");
+            td.click(function () {
+                var box = $(this).parent().children().eq(0).find("input").prop("checked")
+                var el_class = $(this).attr("class")
+                if (el_class == 'td_box'){
+                    return true
+                }
+                else{
+                    if (box == true){
+                    $(this).parent().children().eq(0).find("input").prop("checked",false)
+                    }
+                    else{
+                    $(this).parent().children().eq(0).find("input").prop("checked",true)
+                    }
+                }
+                
+            })
+        });
+
+        //鼠标离开文本框，保存值
+        $("input").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+    </script>
+{% endblock %}

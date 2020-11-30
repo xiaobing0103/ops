@@ -1,0 +1,267 @@
+{% extends "ops/Base.html" %}
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="/static/css/os.css">
+{% endblock %}
+
+{% block content %}
+<h5 id="h5_id">操作系统列表</h5>
+    <form action="", method="GET"> 
+        <table class="a">
+            <tr>
+                <td>产品编号：</td>   
+                <td style="width:200px"><input type="text" name="productid" class="ipt_os_query" value="{{productid}}" autocomplete="off"></td> 
+                <td>主机名：</td>
+                <td style="width:200px"><input type="text" name="hostname" class="ipt_os_query" value="{{hostname}}" autocomplete="off"></td style="">
+                <td>操作系统：</td>
+                <td>
+                    <input list="os_list" name="system_version" class="ipt_os_query" value="{{system_version}}" autocomplete="off">
+                    <datalist id="os_list">
+                        <option value="VMware ESXI 6.5">
+                        <option value="VMware ESXI 6.0">
+                        <option value="Centos 7">
+                        <option value="Ubuntu 16.04">
+                        <option value="Ubuntu 18.08">
+                        <option value="Windows Server 2008 R2">
+                        <option value="Windows Server 2012 R2">
+                        <option value="windows 7">
+                    </datalist>
+                </td>
+            <tr>
+                <td>IP：</td>
+                <td><input type="text" name="ip" class="ipt_os_query" value="{{ip}}" autocomplete="off"></td>
+                <td>宿主机：</td>
+                <td><input type="text" name="esxi_ip" class="ipt_os_query" value="{{esxi_ip}}" autocomplete="off"></td>
+                <td>机器类型：</td>
+                <td>
+                    <input list="type_list" name="server_type" class="ipt_os_query" value="{{server_type}}" autocomplete="off">
+                    <datalist id="type_list">
+                        <option value="物理机">
+                        <option value="虚拟机">
+                    </datalist>
+                </td>   
+            </tr>
+        </table>
+        <br>
+        <div class="blk_btn_set">
+            {% if perms.app_ops.add_os %}
+            <a style="text-decoration: none;" href="/ops/os/add_or_edit_os/"><button type="button" >新增</button></a>
+            {%  endif %}
+            {% if perms.app_ops.change_os %}
+            <button name="alter" id="alter_os" type="button">更改</button>
+            {%  endif %}
+            {% if perms.app_ops.delete_os %}
+            <button name="delete" type="button" id="os_btn_del">删除</button>
+            {%  endif %}
+            <button style="margin-left: 20px;" name="btn_submit" value="select">查询</button>
+            <button name="btn_submit"  value="pre">上一页</button>
+            <button name="btn_submit"  value="next">下一页</button>
+            <button name="btn_submit" value="st_number">跳至</button>
+            <input style="width: 80px; height: 15px;" type="number" name="page_number" autocomplete="off">
+            &ensp;<span style="font-size: 9pt;">{{page_number}} / {{number}}</span>
+            &ensp;&ensp;<span style="font-size: 9pt;">共 {{count}} 条</span>
+            {% if perms.app_ops.add_os %}
+            &emsp;&emsp;&emsp;&emsp;<a href="/ops/os/export/"><button type="button">全部导出</button></a>
+            {%  endif %}
+        </div>   
+    </form>
+    <br>
+    
+    <div style="width: 100%; overflow-x: auto;white-space: nowrap;">
+        <table class="tb" id="tb_os">
+            <tr>
+                <th><input type="checkbox" id="all_box"></th>
+                <th>序号</th>
+                <th>产品编号</th>
+                <th>机器类型</th>
+                <th>主机名</th>
+                <th>操作系统</th>
+                <th>状态</th>
+                <th>内核信息</th>
+                <th>CPU核心</th>
+                <th>内存</th>
+                <th>硬盘</th>
+                <th>vlan</th>
+                <th>IP</th>
+                <th>宿主机</th>
+                <th>监控状态</th>
+                <th>应用信息</th>
+                <th>应用负责人</th>
+                <th>备注</th>
+            </tr>
+            {% for os in list2 %}
+            <tr>
+                <td class="td_box"><input type="checkbox" class="box" id="{{ forloop.counter}}" value="{{ os.id }}" onclick="unselect_all(this)"></td>
+                <td class="data">{{ forloop.counter|add:strat }}</td>
+                <td class="data">{{ os.productid }}</td>
+                <td class="data">{{ os.server_type }}</td>
+                <td class="data">{{ os.hostname }}</td>
+                <td class="data">{{ os.system_version }}</td>
+                <td class="data">{{ os.status }}</td>
+                <td class="data">{{ os.kernel }}</td>
+                <td class="data">{{ os.core_quantity }}</td>
+                <td class="data">{{ os.memory }}</td>
+                <td class="data">{{ os.hdd }}</td>
+                <td class="data">{{ os.vlan }}</td>
+                <td class="data">{{ os.ip }}</td>
+                <td class="data">{{ os.esxi_ip }}</td>
+                <td class="zabbix">
+                    <label class="switch">
+                        <input type="checkbox" tag="{{os.ip}}" class="zabbix_status"  {% ifequal os.zbx_stau 'on' %}checked{%endifequal%}> 
+                        <div class="slider">
+                            <span class="on">on</span>
+                            <span class="off">off</span>
+                        </div>
+                    </label>
+                </td>
+                <td class="data">{{ os.application }}</td>
+                <td class="data">{{ os.administrator }}</td>
+                <td class="data">{{ os.remarks }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div> 
+    <script>
+        $("#li_os").css("background-color","rgb(46, 50, 54)");  //设置当前导航栏选项背景涂色
+        $("#li_os a").css("color","white");
+        //设置复选框全选和反选，以及涂色
+        $("#all_box").click(function(){
+            var x = $(this).prop("checked")
+            $(".box").prop("checked",x)
+            if(x == true){
+                $("table.tb td").css("background-color", "rgb(209, 215, 223)");
+            }
+            else{
+                $("table.tb td").css("background-color", "#FFFFFF");
+            }
+        })
+        
+        //判断是否满足全选
+        $(".box").click(function(){
+            var j = 0
+            var le = $(".box").length
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                if (status == true){
+                    j++;
+                }
+            })
+            if(j<le){
+                $("#all_box").prop("checked",false)
+            }
+            else{
+                $("#all_box").prop("checked",true)
+            }  
+        })
+
+        //删除事件
+        var delete_list = []
+        $("#os_btn_del").click(function(){
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                var id = $(this).val()
+                if (status == true){
+                    delete_list.push(id)
+                }
+            })
+            url = "/ops/dml/?delete_list="+delete_list.join(',')+'&mod=Os'
+            $.getJSON(url,function(status){
+                if(status.code == 0){
+                    alert("删除成功")
+                    window.location.href = "/ops/os/"
+                }
+                else{
+                    alert("操作失败")
+                }
+            })
+        })
+        
+        //编辑事件
+        $("#alter_os").click(function(){
+            var j=0
+            var alter_id
+            $(".box").each(function(){
+                var status = $(this).prop("checked")
+                var id = $(this).val()
+                if (status == true){
+                    j++;
+                    alter_id = id
+                }
+            })
+            if(j>1 || j==0){
+                alert("请仅选择一条数据进行更新！")
+            }
+            else{
+                var url = "/ops/os/add_or_edit_os/"+alter_id
+                window.location.href = url
+            }
+        })
+
+        //zabbix监控按钮设置，
+        $("input.zabbix_status").click(function(){
+            var zbx_stau
+            var st = $(this).prop("checked")
+            if (st == true){
+                zbx_stau = 'on'
+            }
+            else{
+                zbx_stau = 'off'
+            }
+            var url='/ops/os/?zbx_stau='+zbx_stau+'&ip='+$(this).attr('tag')
+            $.getJSON(url,function(d){
+                if (d.code == 200){
+                    return true
+                }
+                else{
+                    alert('更改失败')
+                    $(this).prop("checked",st)
+                }
+            })
+        })
+
+        //鼠标放置背景色设置
+        $(function () {
+            var tr = $("#tb_os tr");
+            tr.mouseover(function () {
+                $(this).css("background-color", "rgb(209, 215, 223)");
+                $(this).children("td").css("background-color", "rgb(209, 215, 223)");
+            }).mouseout(function () {
+                var box =$(this).children().eq(0).find("input").prop("checked")
+                if (box == true){
+                    $(this).css("background-color", "rgb(209, 215, 223)");
+                    $(this).children("td").css("background-color", "rgb(209, 215, 223)");
+                }
+                else{
+                    $(this).css("background-color", "#FFFFFF");
+                    $(this).children("td").css("background-color", "#FFFFFF");
+                }
+            });
+        });
+
+        //点击数据行勾选
+        $(function () {
+            var td = $("#tb_os td");
+            td.click(function () {
+                var box = $(this).parent().children().eq(0).find("input").prop("checked")
+                var el_class = $(this).attr("class")
+                if (el_class == 'td_box'){
+                    return true
+                }
+                else{
+                    if (box == true){
+                    $(this).parent().children().eq(0).find("input").prop("checked",false)
+                    }
+                    else{
+                    $(this).parent().children().eq(0).find("input").prop("checked",true)
+                    }
+                }
+                
+            })
+        });
+    
+        //input鼠标离开保存值
+        $("input").blur(function(){
+                $(this).attr("value",$(this).val());
+            })
+    </script>
+
+{% endblock %}
