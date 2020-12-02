@@ -1,11 +1,33 @@
+#container{
+    position: relative;
+    top: 10px;
+    width: calc(100% - 260px);
+    float: right;
+}
+
+#dir_doc{
+    position: relative;
+    top: 30px;
+    height: 850px;
+    width: 250px;
+    background-color: rgb(228, 233, 240);
+    float: left;
+    z-index: 100;
+    overflow-x: auto;
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
 div.bk_query{
-    text-align: center;
-    margin-top: 40px;
+    margin-top: 10px;
+    width: 220px;
 }
 
 input.ip_query{
-    width: 350px;
-    height: 25px;
+    margin-left: 5px;
+    margin-bottom: 20px;
+    width: 150px;
+    height: 16px;
 }
 
 button.btn_query{
@@ -23,10 +45,6 @@ button.btn_query{
 #btn_create{
     margin-top: 40px;
 }
-
-/* #blk_table{
-    margin: 0 auto;
-} */
 
 .p_text{
     font-size: 10pt;
@@ -55,3 +73,157 @@ a:link {color:#000000;}      /* 未访问链接*/
 a:visited {color:#000000;}  /* 已访问链接 */
 a:hover {color:#000000;}  /* 鼠标移动到链接上 */
 a:active {color:#0000FF;}  /* 鼠标点击时 */
+
+.ul_dir{
+    margin: 10px 0px 10px 25px;
+    padding: 0;
+}
+
+.ul_dir li{
+    margin: 5px 0;
+    font-size: 9pt;
+}
+
+.ul_dir li span{
+    padding: 2px 5px;
+}
+
+.ul_meu{
+    display: none;
+    position: fixed;
+    width: 120px;
+    padding: 0;
+    z-index: 100;
+    background-color: rgb(255, 255, 255);
+}
+
+.ul_meu li.li_option_empty{
+    text-align: center;
+    font-size: 9pt;
+    padding: 5px 10px;
+    display: block;
+    color: rgb(122, 121, 121);
+    text-decoration: none;
+}
+
+.ul_meu li{
+    text-align: center;
+    font-size: 9pt;
+    padding: 5px 10px;
+    display: block;
+    color: #000;
+    text-decoration: none;
+}
+
+.ul_meu li:hover{
+    background-color: rgb(198, 204, 209);
+}
+
+.li_dir{
+    display: block;
+    white-space: nowrap;
+}
+
+.li_dir span:hover{
+    background-color: rgb(128, 188, 236);
+}
+
+.li_doc{
+    display: block;
+}
+
+.li_doc span:hover{
+    background-color: rgb(128, 188, 236);
+}
+
+.img_dir{
+    width: 10px;
+    padding: 0 3px;
+}
+
+.space{
+    font-size: 10pt;
+    margin: 6px 0;
+    /* width: 100px; */
+}
+
+.space:hover{
+    background-color: rgb(128, 188, 236);
+}
+
+h4{
+    text-align: center;
+}
+
+.tb_perms_group{
+    border-collapse: collapse;
+    margin-left:20px;
+    margin-right:20px;
+    border:1px solid black;
+    text-align:center;
+}
+
+.tb_perms_group th{
+    border:1px solid black;
+    font-size: 9pt;
+    height:20px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color:rgb(152, 157, 165);
+}
+
+#btn_create_group{
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.th_perms_group{
+    width: 150px;
+}
+
+.th_perms{
+    width: 300px;
+}
+
+#doc_content{
+    margin-top: 40px;
+    margin-left: 100px;
+    margin-right: 50px;
+    width: 800px;
+    text-indent: 10px;
+}
+
+#doc_operation_area{
+    position: relative;
+    top: 5px;
+    margin-left: 100px;
+    font-size: 10pt;
+    width: 800px;
+    padding-bottom: 5px;
+    border-bottom-style: groove;
+    /* border-bottom-width: 1px; */
+}
+
+.sp_doc_label{
+    margin-left: 30px;
+    font-weight: 510;
+}
+
+.sp_doc_label_data{
+    font-size: 9pt;
+}
+
+#doc_edit_id{
+    position: relative;
+    float: right;
+    right: 20px;
+    color: chocolate;
+    height: 16px;
+}
+
+#p_doc_title{
+    text-align: center;
+    padding-bottom: 15px;
+    font-weight: 510;
+    font-size: 11pt;
+}

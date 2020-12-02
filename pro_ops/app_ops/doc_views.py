@@ -9,7 +9,6 @@ from .models import Doc, Directory, Document, Properm, Progroup, Personal, Userg
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 from .check_login_views import check_login
 from django.contrib.auth.models import ContentType, Permission, User
-from pydocx import PyDocX
 
 
 @check_login
@@ -30,7 +29,7 @@ def doc(request,doc_id=''):
 
     if not doc_id:
         filename = 'documents/main.wt'
-        with open(filename) as file_obj:
+        with open(filename,encoding='utf-8') as file_obj:
             main_html = file_obj.read()
         content = {
         'pros': pros,
@@ -45,7 +44,7 @@ def doc(request,doc_id=''):
         return render(request,'ops/doc.html',context=content)
     else:
         doc_data = Document.objects.get(id=doc_id)
-        with open(doc_data.filepath) as file_obj:
+        with open(doc_data.filepath,encoding='utf-8') as file_obj:
             doc_content = file_obj.read()
         return JsonResponse({
         'code': 0,
@@ -71,7 +70,7 @@ def add_or_edit(request,doc_id):
             pass
         else:
             os.makedirs(doc_path)
-        with open(filepath,'w+') as f:
+        with open(filepath,'w+',encoding='utf-8') as f:
             f.write('')
         del doc_data['csrfmiddlewaretoken']
         doc_data['filepath'] = filepath
@@ -87,12 +86,12 @@ def add_or_edit(request,doc_id):
         if content:
             doc_data = Document.objects.get(id=doc_id)
             filename = doc_data.filepath
-            with open(filename,'w') as file_object:
+            with open(filename,'w',encoding='utf-8') as file_object:
                 file_object.write(content)
             return JsonResponse({'code': 0,})
         elif option:
             doc_data = Document.objects.get(id=doc_id)
-            with open(doc_data.filepath) as file_object:
+            with open(doc_data.filepath,encoding='utf-8') as file_object:
                 doc_content = file_object.read()
             return render(request,'ops/add_or_edit_doc.html',{'doc_id': doc_id, 'doc_content':doc_content})
         else:
